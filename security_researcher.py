@@ -1160,6 +1160,8 @@ def security_researcher(package_info: Dict[str, Any]) -> Dict[str, Any]:
         additional_authorized_imports=["urllib.parse", "re", "json", "datetime"]
     )
     
+    # Get the current date for the agent's context
+    current_date = datetime.now().strftime("%B %d, %Y")
     # Create a formatted version of the package info for the prompt
     package_info_str = json.dumps(package_info, indent=2)
     
@@ -1167,6 +1169,9 @@ def security_researcher(package_info: Dict[str, Any]) -> Dict[str, Any]:
     prompt = f"""
     I need you to perform a security analysis on the package described below. Your task is to identify potential 
     security concerns, vulnerabilities, and provide a risk assessment.
+    
+    IMPORTANT: Today's date is {current_date}. Use this as the reference point when evaluating repository activity, 
+    vulnerability dates, patch timelines, and any other time-sensitive information.
     
     Package Information:
     {package_info_str}

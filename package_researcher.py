@@ -351,6 +351,11 @@ def package_researcher(text_information: str) -> Dict[str, Any]:
         - Package Owner: Individual, organization, or company that owns/maintains the package
         - References: List of URLs used as sources for the information
     """
+    # Import datetime to get the current date
+    from datetime import datetime
+
+    # Get the current date for the agent's context
+    current_date = datetime.now().strftime("%B %d, %Y")
 
     # Create an agent with the research tools
     agent = CodeAgent(
@@ -364,13 +369,16 @@ def package_researcher(text_information: str) -> Dict[str, Any]:
         model=agent_models.gemini_model,
         max_steps=20,
         final_answer_checks=[validate_output],
-        additional_authorized_imports=["urllib.parse", "re", "json"]
+        additional_authorized_imports=["urllib.parse", "re", "json", "datetime"]
     )
     
     # Construct a prompt for the agent based on the detailed flow
     prompt = f"""
     I need you to research the software package described in the information below. Your task is to extract or find 
     all relevant information about this package and provide a comprehensive report.
+    
+    IMPORTANT: Today's date is {current_date}. When evaluating version release dates, package age, or any time-related information, 
+    use this date as the reference point.
     
     Package Information:
     {text_information}
@@ -400,6 +408,7 @@ def package_researcher(text_information: str) -> Dict[str, Any]:
        a. If the text contains terms like "current", "latest", "newest", or similar words that suggest the latest version, then the "Requested Package Version" should be set to the actual latest version number you find.
        b. NEVER use the string "Latest" as a version number. Always try to find the specific numeric version (e.g., "4.2.1").
        c. Only if you absolutely cannot find a specific version number after searching, then use "Unknown" instead of "Latest".
+       d. Remember that today's date is {current_date} when evaluating if a version release date is valid - versions with dates up to this day are valid, not "from the future".
     
     Your final answer MUST be a dictionary containing these exact keys:
     - Name: The Name of the Identified Package

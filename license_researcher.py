@@ -1,5 +1,6 @@
 import os
 import yaml
+from datetime import datetime
 
 from typing import Dict, Any, Optional, List
 from smolagents import CodeAgent, tool, FinalAnswerTool, LiteLLMModel
@@ -137,6 +138,8 @@ def license_researcher(text_information: str) -> Dict[str, Any]:
         - Notes: Any specific guidance from legal about this license
         - References: List of URLs or sources where license information was found
     """
+    # Get the current date for the agent's context
+    current_date = datetime.now().strftime("%B %d, %Y")
 
     # Create an agent with the evaluation tools
     final_answer_tool = FinalAnswerTool()
@@ -149,7 +152,7 @@ def license_researcher(text_information: str) -> Dict[str, Any]:
         model=agent_models.gemini_model,
         max_steps=20,
         final_answer_checks=[validate_output],
-        additional_authorized_imports=["google.genai", "yaml", "urllib.parse"]
+        additional_authorized_imports=["google.genai", "yaml", "urllib.parse", "datetime"]
     )
     
     # Construct a prompt for the agent based on the detailed flow
@@ -157,6 +160,9 @@ def license_researcher(text_information: str) -> Dict[str, Any]:
     I need you to evaluate the software license information provided below. Your task is to identify the license type 
     and provide license guidance according to our database. Assume that the version of the software is the latest 
     version if not specified.
+    
+    IMPORTANT: Today's date is {current_date}. Use this as the reference point when evaluating license validity,
+    expiration dates, or any time-related license information.
     
     Package Information:
     {text_information}
