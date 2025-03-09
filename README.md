@@ -303,60 +303,67 @@ print(f"Explanation: {result['Explanation']}")
 ### Markdown Report Example
 
 ```markdown
-# ⚠️ Open Source Package Assessment Report
+# OSS Assessment Report: E2B Secure Open Source Cloud Runtime current
 
-## Verdict: ⚠️ Use with Caution
+*Generated on: 2025-03-08 18:02:21*
 
-The Lodash library is licensed under the permissive MIT license. However, several vulnerabilities have been identified in versions of lodash prior to 4.17.21. To mitigate these risks, ensure that you are using version 4.17.21 or later.
 
 ## 📦 Package Information
 
-**Name**: lodash
-**Latest Version**: 4.17.21
-**Requested Version**: 4.17
-**Primary Language**: JavaScript
-**License Type**: MIT
-**Owner/Maintainer**: OpenJS Foundation
+- **Name:** E2B Secure Open Source Cloud Runtime
+- **Requested Version:** current
+- **Latest Version:** 1.0.4
+- **Primary Language:** TypeScript, Python, JavaScript, Go
+- **Description:** E2B is an open-source infrastructure that allows you to run AI-generated code in secure, isolated cloud sandboxes. It provides a secure runtime environment for AI applications and agents, allowing them to use the same tools as humans in a secure cloud environment.
+- **Repository:** [https://github.com/e2b-dev/e2b](https://github.com/e2b-dev/e2b)
+- **Maintained By:** e2b-dev
 
-**Description**:
-> Lodash is a modern JavaScript utility library delivering modularity, performance, & extras. It provides utility functions for common programming tasks using the functional programming paradigm.
+## 🗒️ Package Evaluation
 
-**Source Code**: [https://github.com/lodash/lodash](https://github.com/lodash/lodash)
+- **Advisory:** ❗ Use with Caution
+- **Explanation:** This package can be used with caution, but be aware of the following risks: Contains known vulnerabilities that may need mitigation, Has medium security risk that requires attention, Has reported security issues that need to be addressed and Using an older version (current) instead of the latest (1.0.4). The implementation risk rating is Medium due to the presence of a high severity CVE (CVE-2023-6932) and potential security vulnerabilities associated with LLM-integrated frameworks, such as RCE, untrusted code execution, and prompt injection attacks. While E2B focuses on providing secure code execution environments, these vulnerabilities and issues need to be carefully considered and mitigated. The repository's relatively young age and the lack of an explicitly stated number of contributors also contribute to the Medium risk rating. License (MIT) is permitted for use.
 
-## ⚖️ License Evaluation
+## 📜 License Evaluation
 
-**License Type**: MIT
-**Status**: ✅ Allowed
+- **License:** MIT
+- **Status:** ✅ Allowed
+- **Notes:** The MIT License is permissive and business-friendly. It allows for commercial use, modification, distribution, and private use, with minimal restrictions.
 
-**Legal Notes**:
-> The MIT License is permissive and business-friendly. It allows for commercial use, modification, distribution, and private use, with minimal restrictions.
+## 🔒 Security Evaluation
 
-## 🔒 Security Analysis
+- **Security Risk:** ⚠️ Medium
+- **Risk Assessment:** The implementation risk rating is Medium due to the presence of a high severity CVE (CVE-2023-6932) and potential security vulnerabilities associated with LLM-integrated frameworks, such as RCE, untrusted code execution, and prompt injection attacks. While E2B focuses on providing secure code execution environments, these vulnerabilities and issues need to be carefully considered and mitigated. The repository's relatively young age and the lack of an explicitly stated number of contributors also contribute to the Medium risk rating.
 
-**Risk Rating**: 🟠 Medium
+### Known Vulnerabilities:
 
-**Risk Explanation**:
-> Lodash version 4.17.21 has some known vulnerabilities, including a disputed command injection vulnerability. However, other high and medium severity CVEs affected versions prior to 4.17.21.
+**❓ CVE-2023-6932 (HIGH)**
+- Use-after-free vulnerability in the Linux kernel's ipv4: igmp component, which can be exploited for local privilege escalation.
+- Status: ❌ Modified
 
-**Potential Concerns**:
-- Repository is relatively old (released in 2012).
-- Last commit was 3 months ago, which could indicate slowing development.
-- Vendor disputed command injection vulnerability (CVE-2021-41720).
 
-**Known Vulnerabilities**:
-- **CVE-2021-23337** 🔴 High: Command Injection in versions prior to 4.17.21. - *Patched in 4.17.21*
-- **CVE-2020-8203** 🟠 Medium: Prototype Pollution in versions prior to 4.17.19. - *Patched in versions >= 4.17.19*
-- **CVE-2020-28500** 🟠 Medium: Regular Expression Denial of Service (ReDoS) in versions before 4.17.21. - *Patched in 4.17.21*
+### Other Security Concerns:
 
-**Other Security Issues**:
-- Prototype pollution vulnerability
+- Potential RCE vulnerabilities associated with LLM-integrated frameworks
+- Risk of untrusted code execution
+- Risk of prompt injection attacks
+
+### Repository Health:
+
+- Relatively young repository (1 year and 10 months to 2 years old)
+- Exact number of contributors is not explicitly stated
+- Potential RCE vulnerabilities associated with LLM-integrated frameworks
+- Risk of untrusted code execution and prompt injection attacks
+- Common bugs and issues, including timeout errors and sandbox creation failures
 
 ## 📚 References
 
-1. https://github.com/lodash/lodash
-2. https://nvd.nist.gov/vuln/detail/CVE-2021-23337
-3. https://github.com/advisories/GHSA-35jh-r3h4-6jhm
-4. https://www.cvedetails.com/version/667817/Lodash-Lodash-4.17.21.html
+1. https://github.com/e2b-dev/e2b
+2. https://security@langchain.dev
+3. https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit?id=e2b706c691905fe78468c361aaabc719d0a496f1
+4. https://kernel.dance/e2b706c691905fe78468c361aaabc719d0a496f1
+5. https://lists.debian.org/debian-lts-announce/2024/01/msg00004.html
+6. https://lists.debian.org/debian-lts-announce/2024/01/msg00005.html
+7. http://packetstormsecurity.com/files/177029/Kernel-Live-Patch-Security-Notice-LSN-0100-1.html
 ```
 
 ## License Statuses
