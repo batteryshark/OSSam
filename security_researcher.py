@@ -81,77 +81,99 @@ def is_version_affected(cve_description: str, package_version: str) -> bool:
         
     return False
 
-def check_version_with_llm(cve_description: str, package_name: str, package_version: str) -> Tuple[bool, str]:
+def check_version_with_llm(cve_description: str, package_name: str, package_version: str, max_retries: int = 5) -> Tuple[bool, str]:
     """
     Use LLM to determine if a specific package version is affected by a vulnerability.
+    Uses exponential backoff to handle rate limiting.
     
     Args:
         cve_description: The description of the CVE
         package_name: Name of the package
         package_version: The specific version to check
+        max_retries: Maximum number of retries (default: 5)
         
     Returns:
         Tuple of (is_affected, explanation)
     """
-    try:
-        # Skip LLM check if no version specified
-        if not package_version:
-            return True, "No specific version provided to check"
+    # Skip LLM check if no version specified
+    if not package_version:
+        return True, "No specific version provided to check"
+        
+    # Create a more detailed prompt for Gemini
+    prompt = f"""
+    Analyze if version '{package_version}' of '{package_name}' is affected by the following CVE:
+    
+    CVE description:
+    {cve_description}
+    
+    Follow these steps:
+    1. Identify any version information mentioned in the description (ranges, specific versions, etc.)
+    2. Compare '{package_version}' with the affected versions
+    3. Determine if '{package_version}' falls within the affected range or matches the criteria
+    
+    Rules:
+    - Consider version comparisons semantically (e.g., 1.1.0 is different from 1.1.0q)
+    - If the description mentions "prior to X" and '{package_version}' is before X, it's affected
+    - If the description mentions "up to X" and '{package_version}' is before or equal to X, it's affected
+    - If the description mentions "between X and Y" and '{package_version}' falls in that range, it's affected
+    - If no clear version information is given, but it seems to affect all versions, assume it's affected
+    
+    Begin your response with YES, NO, or UNCERTAIN, then explain your reasoning.
+    """
+    
+    # Try multiple times with exponential backoff for rate limiting
+    for attempt in range(1, max_retries + 1):
+        try:
+            # Get a Gemini model instance
+            model = LiteLLMModel(
+                model_id="gemini/gemini-2.0-flash-lite",
+                api_key=os.getenv("GEMINI_API_KEY")
+            )
             
-        # Create a more detailed prompt for Gemini
-        prompt = f"""
-        Analyze if version '{package_version}' of '{package_name}' is affected by the following CVE:
-        
-        CVE description:
-        {cve_description}
-        
-        Follow these steps:
-        1. Identify any version information mentioned in the description (ranges, specific versions, etc.)
-        2. Compare '{package_version}' with the affected versions
-        3. Determine if '{package_version}' falls within the affected range or matches the criteria
-        
-        Rules:
-        - Consider version comparisons semantically (e.g., 1.1.0 is different from 1.1.0q)
-        - If the description mentions "prior to X" and '{package_version}' is before X, it's affected
-        - If the description mentions "up to X" and '{package_version}' is before or equal to X, it's affected
-        - If the description mentions "between X and Y" and '{package_version}' falls in that range, it's affected
-        - If no clear version information is given, but it seems to affect all versions, assume it's affected
-        
-        Begin your response with YES, NO, or UNCERTAIN, then explain your reasoning.
-        """
-        
-        # Get a Gemini model instance (similar to license_researcher.py)
-        model = LiteLLMModel(
-            model_id="gemini/gemini-2.0-flash-lite",
-            api_key=os.getenv("GEMINI_API_KEY")
-        )
-        
-        # Format message in chat format
-        messages = [
-            {"role": "user", "content": [{"type": "text", "text": prompt}]}
-        ]
-        
-        # Get response from the model with temperature 0 for deterministic output
-        response = model(messages, temperature=0.0).content.strip()
-        
-        # Parse the response
-        clean_response = response.upper()
-        
-        # Determine if the version is affected based on the response
-        if "YES" in clean_response[:10]:
-            return True, response
-        elif "NO" in clean_response[:10]:
-            return False, response
-        else:
-            # If uncertain, be conservative and assume it could be affected
-            return True, response
+            # Format message in chat format
+            messages = [
+                {"role": "user", "content": [{"type": "text", "text": prompt}]}
+            ]
             
-    except Exception as e:
-        print(f"Error using Gemini to check version: {str(e)}")
-        # If there's an error, fall back to the simple pattern-based check
-        return is_version_affected(cve_description, package_version), f"Error with Gemini check: {str(e)}"
+            # Get response from the model with temperature 0 for deterministic output
+            response = model(messages, temperature=0.0).content.strip()
+            
+            # Parse the response
+            clean_response = response.upper()
+            
+            # Determine if the version is affected based on the response
+            if "YES" in clean_response[:10]:
+                return True, response
+            elif "NO" in clean_response[:10]:
+                return False, response
+            else:
+                # If uncertain, be conservative and assume it could be affected
+                return True, response
+                
+        except Exception as e:
+            error_message = str(e).lower()
+            
+            # Check if error message suggests rate limiting
+            rate_limit_keywords = ["rate limit", "resource exhausted", "quota", "quota exceeded", "429", "too many requests", "throttl"]
+            is_rate_limit = any(keyword in error_message for keyword in rate_limit_keywords)
+            
+            if is_rate_limit and attempt < max_retries:
+                print(f"Gemini API rate limited. Retrying attempt {attempt}/{max_retries}...")
+                sleep_with_backoff(attempt=attempt, base_time=5, max_time=120)  # Longer backoff for Gemini API
+                continue
+            elif attempt < max_retries:
+                print(f"Gemini API error: {str(e)}. Retrying attempt {attempt}/{max_retries}...")
+                sleep_with_backoff(attempt=attempt)
+                continue
+            else:
+                print(f"Failed to use Gemini after {max_retries} attempts: {str(e)}")
+                # If there's an error after all retries, fall back to the simple pattern-based check
+                return is_version_affected(cve_description, package_version), f"Error with Gemini check after {max_retries} attempts: {str(e)}"
+    
+    # Fallback in case we somehow exit the loop
+    return is_version_affected(cve_description, package_version), "Failed to get a response from Gemini"
 
-def analyze_version_affected(cve_description: str, package_name: str, package_version: str) -> Tuple[bool, str, str]:
+def analyze_version_affected(cve_description: str, package_name: str, package_version: str, max_retries: int = 5) -> Tuple[bool, str, str]:
     """
     Determine if a package version is affected by a CVE using both pattern matching and LLM.
     
@@ -159,6 +181,7 @@ def analyze_version_affected(cve_description: str, package_name: str, package_ve
         cve_description: The description of the CVE
         package_name: Name of the package
         package_version: The specific version to check
+        max_retries: Maximum number of retries for LLM calls (default: 5)
         
     Returns:
         Tuple of (is_affected, explanation, confidence)
@@ -202,7 +225,12 @@ def analyze_version_affected(cve_description: str, package_name: str, package_ve
         "versions from", "through", "and later", "and earlier"
     ]):
         # This description contains version ranges that require analysis
-        is_affected, explanation = check_version_with_llm(cve_description, package_name, package_version)
+        is_affected, explanation = check_version_with_llm(
+            cve_description, 
+            package_name, 
+            package_version,
+            max_retries=max_retries
+        )
         
         # Determine confidence based on the explanation
         if "YES" in explanation[:10].upper() or "NO" in explanation[:10].upper():
@@ -370,7 +398,7 @@ def search_cves_with_nvdlib(package_name: str, version: Optional[str] = None, ma
             error_message = str(e).lower()
             
             # Check if error message suggests rate limiting
-            rate_limit_keywords = ["rate limit", "too many requests", "429", "quota exceeded", "throttl"]
+            rate_limit_keywords = ["rate limit", "resource exhausted", "quota", "quota exceeded", "429", "too many requests", "throttl"]
             is_rate_limit = any(keyword in error_message for keyword in rate_limit_keywords)
             
             if is_rate_limit and attempt < max_retries:
@@ -460,7 +488,12 @@ def search_cves_with_nvdlib(package_name: str, version: Optional[str] = None, ma
                             status = cve_item.vulnStatus
                         
                         # Check if this version is affected by the vulnerability using our enhanced approach
-                        version_affected, explanation, confidence = analyze_version_affected(description, package_name, version)
+                        version_affected, explanation, confidence = analyze_version_affected(
+                            description, 
+                            package_name, 
+                            version,
+                            max_retries=max_retries
+                        )
                         
                         # Create detailed CVE entry
                         if not version or version_affected:
@@ -485,7 +518,7 @@ def search_cves_with_nvdlib(package_name: str, version: Optional[str] = None, ma
                     error_message = str(e).lower()
                     
                     # Check if error message suggests rate limiting
-                    rate_limit_keywords = ["rate limit", "too many requests", "429", "quota exceeded", "throttl"]
+                    rate_limit_keywords = ["rate limit", "resource exhausted", "quota", "quota exceeded", "429", "too many requests", "throttl"]
                     is_rate_limit = any(keyword in error_message for keyword in rate_limit_keywords)
                     
                     if is_rate_limit and attempt < max_retries:
@@ -596,7 +629,12 @@ def search_cves_with_nvdlib(package_name: str, version: Optional[str] = None, ma
                                 status = cve_item.vulnStatus
                             
                             # Check if this version is affected by the vulnerability using our enhanced approach
-                            version_affected, explanation, confidence = analyze_version_affected(description, package_name, version)
+                            version_affected, explanation, confidence = analyze_version_affected(
+                                description, 
+                                package_name, 
+                                version,
+                                max_retries=max_retries
+                            )
                             
                             # Create detailed CVE entry
                             if not version or version_affected:
@@ -621,7 +659,7 @@ def search_cves_with_nvdlib(package_name: str, version: Optional[str] = None, ma
                         error_message = str(e).lower()
                         
                         # Check if error message suggests rate limiting
-                        rate_limit_keywords = ["rate limit", "too many requests", "429", "quota exceeded", "throttl"]
+                        rate_limit_keywords = ["rate limit", "resource exhausted", "quota", "quota exceeded", "429", "too many requests", "throttl"]
                         is_rate_limit = any(keyword in error_message for keyword in rate_limit_keywords)
                         
                         if is_rate_limit and attempt < max_retries:
@@ -743,36 +781,44 @@ def search_vulnerabilities(package_name: str, version: Optional[str] = None, max
         f"{package_name} security bugs issues"
     ]
     
-    # Execute each search query with retry logic
+    # Execute each search query with retry logic and progressive backoff
     for query in search_queries:
         for attempt in range(1, max_retries + 1):
             try:
+                # Always add a small delay before each web search to avoid rapid-fire requests
+                # This prevents hitting rate limits in the first place
+                if attempt > 1:
+                    sleep_with_backoff(attempt=attempt-1, base_time=3, max_time=90)
+                else:
+                    # Even on first attempt, add a small delay between searches
+                    time.sleep(random.uniform(1.0, 2.0))
+                    
                 results = agent_tools.search_web(search_query=query)
                 search_results[query] = results
                 # Add the actual search query to references instead of generic label
                 references.append(f"Search results for: '{query}'")
-                # Successful search, add sleep to avoid hitting rate limits
-                sleep_with_backoff(attempt=1, base_time=2)  # Using base sleep time
+                
+                # Always add a delay after successful search to avoid hitting rate limits on subsequent searches
+                # Use progressively longer delays if we've already hit rate limits before
+                sleep_with_backoff(attempt=max(1, attempt-1), base_time=3, max_time=60)
                 break  # Break the retry loop on success
+                
             except Exception as e:
                 error_message = str(e).lower()
-                # Check if error message suggests rate limiting
-                rate_limit_keywords = ["rate limit", "too many requests", "429", "quota exceeded", "throttl"]
-                is_rate_limit = any(keyword in error_message for keyword in rate_limit_keywords)
+                rate_limit_keywords = ["rate limit", "resource exhausted", "quota", "quota exceeded", "429", "too many requests", "throttl"]
                 
-                if is_rate_limit and attempt < max_retries:
-                    print(f"Search for '{query}' failed due to rate limiting. Retrying ({attempt}/{max_retries})...")
-                    sleep_with_backoff(attempt=attempt)
+                if any(keyword in error_message for keyword in rate_limit_keywords) and attempt < max_retries:
+                    print(f"Web search API rate limited. Retrying ({attempt}/{max_retries})...")
+                    # Use longer backoff time for rate limits
+                    sleep_with_backoff(attempt=attempt, base_time=5, max_time=120)
                     continue
                 elif attempt < max_retries:
-                    # If it's not a rate limit error but we still have retries
-                    print(f"Search for '{query}' failed for other reasons. Retrying ({attempt}/{max_retries})...")
-                    sleep_with_backoff(attempt=1)  # Use base backoff
+                    print(f"Web search API error: {str(e)}. Retrying ({attempt}/{max_retries})...")
+                    sleep_with_backoff(attempt=attempt, base_time=3)
                     continue
                 else:
-                    # If we've reached the maximum number of retries
-                    search_results[query] = f"Search failed after {attempt} attempts: {str(e)}"
-                    break
+                    print(f"Web search failed after {max_retries} attempts: {str(e)}")
+                    search_results[query] = f"Search failed: {str(e)}"
     
     # Extract references from search results
     for query, result in search_results.items():
@@ -891,7 +937,7 @@ def get_cve_details(cve_id: str, max_retries: int = 5) -> Dict[str, Any]:
                 error_message = str(e).lower()
                 
                 # Check if error message suggests rate limiting
-                rate_limit_keywords = ["rate limit", "too many requests", "429", "quota exceeded", "throttl"]
+                rate_limit_keywords = ["rate limit", "resource exhausted", "quota", "quota exceeded", "429", "too many requests", "throttl"]
                 is_rate_limit = any(keyword in error_message for keyword in rate_limit_keywords)
                 
                 if is_rate_limit and attempt < max_retries:
@@ -972,11 +1018,9 @@ def get_cve_details(cve_id: str, max_retries: int = 5) -> Dict[str, Any]:
             }
         except Exception as e:
             error_message = str(e).lower()
-            # Check if error message suggests rate limiting
-            rate_limit_keywords = ["rate limit", "too many requests", "429", "quota exceeded", "throttl"]
-            is_rate_limit = any(keyword in error_message for keyword in rate_limit_keywords)
+            rate_limit_keywords = ["rate limit", "resource exhausted", "quota", "quota exceeded", "429", "too many requests", "throttl"]
             
-            if is_rate_limit and attempt < max_retries:
+            if any(keyword in error_message for keyword in rate_limit_keywords) and attempt < max_retries:
                 print(f"Search for CVE '{cve_id}' failed due to rate limiting. Retrying ({attempt}/{max_retries})...")
                 sleep_with_backoff(attempt=attempt)
                 continue
@@ -1144,6 +1188,36 @@ def security_researcher(package_info: Dict[str, Any]) -> Dict[str, Any]:
         - Implementation Risk Rating Explanation: Explanation of the risk rating
         - References: List of sources used for the security research
     """
+    # Check if package_info is a string (legacy compatibility)
+    if isinstance(package_info, str):
+        # Convert to a simple dictionary with just the name
+        package_info = {"Name": package_info, "package_name": package_info, "name": package_info}
+    
+    # Normalize the package_info structure to ensure it has standard keys
+    normalized_info = package_info.copy()
+    
+    # Handle variations in key names for package name
+    if "Name" not in normalized_info and "name" in normalized_info:
+        normalized_info["Name"] = normalized_info["name"]
+    if "name" not in normalized_info and "Name" in normalized_info:
+        normalized_info["name"] = normalized_info["Name"]
+        
+    # Handle variations in key names for package version
+    version_keys = ["Latest Package Version", "Requested Package Version", "version", "Version"]
+    for src_key in version_keys:
+        if src_key in normalized_info and normalized_info[src_key]:
+            # Ensure all version keys exist
+            for dest_key in ["Latest Package Version", "Requested Package Version", "version"]:
+                if dest_key not in normalized_info or not normalized_info[dest_key]:
+                    normalized_info[dest_key] = normalized_info[src_key]
+            break
+            
+    # Handle variations in key names for repository URL
+    if "Link to Source Code" not in normalized_info and "repository_url" in normalized_info:
+        normalized_info["Link to Source Code"] = normalized_info["repository_url"]
+    if "repository_url" not in normalized_info and "Link to Source Code" in normalized_info:
+        normalized_info["repository_url"] = normalized_info["Link to Source Code"]
+        
     # Create an agent with the security research tools
     agent = CodeAgent(
         tools=[
@@ -1160,10 +1234,15 @@ def security_researcher(package_info: Dict[str, Any]) -> Dict[str, Any]:
         additional_authorized_imports=["urllib.parse", "re", "json", "datetime"]
     )
     
+    # Add convenience fields to help the agent
+    if "Name" in normalized_info and "version" in normalized_info:
+        normalized_info["package_with_version"] = f"{normalized_info['Name']} {normalized_info['version']}"
+    
     # Get the current date for the agent's context
     current_date = datetime.now().strftime("%B %d, %Y")
+
     # Create a formatted version of the package info for the prompt
-    package_info_str = json.dumps(package_info, indent=2)
+    package_info_str = json.dumps(normalized_info, indent=2)
     
     # Construct a prompt for the agent
     prompt = f"""
@@ -1176,18 +1255,27 @@ def security_researcher(package_info: Dict[str, Any]) -> Dict[str, Any]:
     Package Information:
     {package_info_str}
     
+    IMPORTANT: The package_info dictionary above contains valuable information you should use throughout your analysis.
+    Specifically:
+    - Extract the package name from package_info["Name"] or package_info["name"]
+    - Extract the package version from package_info["Requested Package Version"], package_info["Latest Package Version"], or package_info["version"]
+    - Use the repository URL from package_info["Link to Source Code"] or package_info["repository_url"] for repository health analysis
+    - Consider the package maintainer/owner information from package_info["Package Owner"] or package_info["maintainers"]
+    
     Follow these precise steps:
     
     1. Analyze the repository health and activity:
-       a. How old is the repository? (newer repositories might be less stable)
-       b. How many contributors does it have? (fewer contributors might indicate less support)
-       c. When was the last commit? (inactive repositories might indicate abandonment)
-       d. How active is development? (low activity might indicate lack of maintenance)
+       a. Use the analyze_repository_health tool with the repository URL from package_info
+       b. How old is the repository? (newer repositories might be less stable)
+       c. How many contributors does it have? (fewer contributors might indicate less support)
+       d. When was the last commit? (inactive repositories might indicate abandonment)
+       e. How active is development? (low activity might indicate lack of maintenance)
     
     2. Search for known vulnerabilities:
-       a. Look for CVEs (Common Vulnerabilities and Exposures) affecting this package/version
-       b. For each CVE found, get details on severity, impact, and remediation if available
-       c. Determine if the vulnerabilities affect the specific version mentioned
+       a. Use the search_vulnerabilities tool with the exact package name and version from package_info
+       b. Look for CVEs (Common Vulnerabilities and Exposures) affecting this package/version
+       c. For each CVE found, use get_cve_details to get severity, impact, and remediation if available
+       d. Determine if the vulnerabilities affect the specific version mentioned
     
     3. Search for other security bugs or issues not listed as CVEs:
        a. Look for security-related issues in issue trackers
@@ -1210,9 +1298,48 @@ def security_researcher(package_info: Dict[str, Any]) -> Dict[str, Any]:
     - Implementation Risk Rating: Overall risk rating (High, Medium, or Low)
     - Implementation Risk Rating Explanation: Explanation of the risk rating based on findings
     - References: A list of URLs used as sources for the security research
+    - Package_Info: The normalized package information used for this analysis
     """
     
-    return agent.run(prompt)
+    # Run the agent with retry logic for potential rate limit issues
+    max_agent_retries = 3
+    for attempt in range(1, max_agent_retries + 1):
+        try:
+            # Run the agent with a timeout
+            result = agent.run(prompt)
+            
+            # Add the normalized package info to the result if it's not already there
+            if isinstance(result, dict) and "Package_Info" not in result:
+                result["Package_Info"] = normalized_info
+                
+            return result
+            
+        except Exception as e:
+            error_message = str(e).lower()
+            rate_limit_keywords = ["rate limit", "resource exhausted", "quota", "quota exceeded", "429", "too many requests", "throttl"]
+            
+            if any(keyword in error_message for keyword in rate_limit_keywords) and attempt < max_agent_retries:
+                print(f"Rate limit encountered in agent execution. Waiting before retry {attempt}/{max_agent_retries}...")
+                # Use a much longer backoff for agent retries
+                sleep_with_backoff(attempt=attempt, base_time=10, max_time=300)
+                continue
+            elif attempt < max_agent_retries:
+                print(f"Error in agent execution: {str(e)}. Retrying {attempt}/{max_agent_retries}...")
+                sleep_with_backoff(attempt=attempt, base_time=5)
+                continue
+            else:
+                print(f"Failed to complete security research after {max_agent_retries} attempts: {str(e)}")
+                # Return a partial result with error information
+                return {
+                    "Potential Concerns": ["Analysis failed due to rate limits or other errors"],
+                    "CVEs": [],
+                    "Other Security Bugs": [],
+                    "Implementation Risk Rating": "Unknown",
+                    "Implementation Risk Rating Explanation": f"Security analysis failed due to technical errors: {str(e)}",
+                    "References": [],
+                    "Package_Info": normalized_info,
+                    "Error": str(e)
+                }
 
 
 if __name__ == "__main__":
