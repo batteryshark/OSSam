@@ -74,7 +74,7 @@ def lookup_license_information(name: str, references: Optional[List[str]] = None
         model = LiteLLMModel(
         model_id="gemini/gemini-2.0-flash-lite",
         api_key=os.getenv("GEMINI_API_KEY")
-    )
+        )
         messages = [
             {"role": "user", "content": [{"type": "text", "text": normalization_prompt}]}
         ]

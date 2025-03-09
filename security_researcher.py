@@ -39,6 +39,196 @@ def sleep_with_backoff(attempt=1, base_time=2, max_time=60):
     print(f"Sleeping for {sleep_time:.2f} seconds to avoid rate limits...")
     time.sleep(sleep_time)
 
+def is_version_affected(cve_description: str, package_version: str) -> bool:
+    """
+    Determine if a specific package version is affected by a vulnerability based on its description.
+    
+    Args:
+        cve_description: The description of the CVE
+        package_version: The specific version to check
+        
+    Returns:
+        Boolean indicating if the version is potentially affected
+    """
+    # If no specific version is provided, assume it's affected
+    if not package_version:
+        return True
+        
+    # Quick check for when the description explicitly mentions the version
+    if package_version.lower() in cve_description.lower():
+        return True
+
+    # Common patterns indicating version ranges in CVE descriptions
+    affected_patterns = [
+        f"versions up to {package_version}",
+        f"versions before {package_version}",
+        f"prior to {package_version}",
+        f"versions {package_version} and earlier",
+        f"including {package_version}",
+        f"{package_version} is affected"
+    ]
+    
+    # Check if any of the patterns match
+    for pattern in affected_patterns:
+        if pattern.lower() in cve_description.lower():
+            return True
+    
+    # If the description mentions version ranges, we would need more complex parsing
+    # For a robust solution, this is where an LLM call would be ideal
+    # For now, we'll be conservative and include the CVE if we're not sure
+    if any(x in cve_description.lower() for x in ["version", "affected", "vulnerable", "impact"]):
+        return True
+        
+    return False
+
+def check_version_with_llm(cve_description: str, package_name: str, package_version: str) -> Tuple[bool, str]:
+    """
+    Use LLM to determine if a specific package version is affected by a vulnerability.
+    
+    Args:
+        cve_description: The description of the CVE
+        package_name: Name of the package
+        package_version: The specific version to check
+        
+    Returns:
+        Tuple of (is_affected, explanation)
+    """
+    try:
+        # Skip LLM check if no version specified
+        if not package_version:
+            return True, "No specific version provided to check"
+            
+        # Create a more detailed prompt for Gemini
+        prompt = f"""
+        Analyze if version '{package_version}' of '{package_name}' is affected by the following CVE:
+        
+        CVE description:
+        {cve_description}
+        
+        Follow these steps:
+        1. Identify any version information mentioned in the description (ranges, specific versions, etc.)
+        2. Compare '{package_version}' with the affected versions
+        3. Determine if '{package_version}' falls within the affected range or matches the criteria
+        
+        Rules:
+        - Consider version comparisons semantically (e.g., 1.1.0 is different from 1.1.0q)
+        - If the description mentions "prior to X" and '{package_version}' is before X, it's affected
+        - If the description mentions "up to X" and '{package_version}' is before or equal to X, it's affected
+        - If the description mentions "between X and Y" and '{package_version}' falls in that range, it's affected
+        - If no clear version information is given, but it seems to affect all versions, assume it's affected
+        
+        Begin your response with YES, NO, or UNCERTAIN, then explain your reasoning.
+        """
+        
+        # Get a Gemini model instance (similar to license_researcher.py)
+        model = LiteLLMModel(
+            model_id="gemini/gemini-2.0-flash-lite",
+            api_key=os.getenv("GEMINI_API_KEY")
+        )
+        
+        # Format message in chat format
+        messages = [
+            {"role": "user", "content": [{"type": "text", "text": prompt}]}
+        ]
+        
+        # Get response from the model with temperature 0 for deterministic output
+        response = model(messages, temperature=0.0).content.strip()
+        
+        # Parse the response
+        clean_response = response.upper()
+        
+        # Determine if the version is affected based on the response
+        if "YES" in clean_response[:10]:
+            return True, response
+        elif "NO" in clean_response[:10]:
+            return False, response
+        else:
+            # If uncertain, be conservative and assume it could be affected
+            return True, response
+            
+    except Exception as e:
+        print(f"Error using Gemini to check version: {str(e)}")
+        # If there's an error, fall back to the simple pattern-based check
+        return is_version_affected(cve_description, package_version), f"Error with Gemini check: {str(e)}"
+
+def analyze_version_affected(cve_description: str, package_name: str, package_version: str) -> Tuple[bool, str, str]:
+    """
+    Determine if a package version is affected by a CVE using both pattern matching and LLM.
+    
+    Args:
+        cve_description: The description of the CVE
+        package_name: Name of the package
+        package_version: The specific version to check
+        
+    Returns:
+        Tuple of (is_affected, explanation, confidence)
+    """
+    # If no version is provided, it's always considered affected
+    if not package_version:
+        return True, "No specific version provided to check", "HIGH"
+    
+    # Quick checks for obvious cases to avoid unnecessary LLM calls
+    
+    # Case 1: The exact version is mentioned in the description
+    if package_version.lower() in cve_description.lower():
+        # Only when the version appears in context that suggests it's affected
+        version_indicators = [
+            f"affects {package_version}",
+            f"including {package_version}",
+            f"version {package_version} is",
+            f"{package_version} and",
+            f"{package_version} is affected",
+            f"{package_version} contains"
+        ]
+        for indicator in version_indicators:
+            if indicator.lower() in cve_description.lower():
+                return True, f"Version {package_version} is explicitly mentioned as affected", "HIGH"
+    
+    # Case 2: The description clearly indicates all versions are affected
+    all_versions_patterns = [
+        "all versions",
+        "any version",
+        "every version",
+        "affects all"
+    ]
+    if any(p.lower() in cve_description.lower() for p in all_versions_patterns):
+        return True, "All versions are indicated as affected", "HIGH"
+    
+    # Case 3: Check for version ranges using common patterns
+    # For complex version comparisons where we need nuanced analysis, use the LLM
+    if any(x in cve_description.lower() for x in [
+        "prior to", "before", "versions up to", "earlier than", 
+        "later than", "newer than", "between", "from version", 
+        "versions from", "through", "and later", "and earlier"
+    ]):
+        # This description contains version ranges that require analysis
+        is_affected, explanation = check_version_with_llm(cve_description, package_name, package_version)
+        
+        # Determine confidence based on the explanation
+        if "YES" in explanation[:10].upper() or "NO" in explanation[:10].upper():
+            confidence = "MEDIUM"  # LLM was decisive
+            
+            # Look for additional confidence indicators in the explanation
+            if any(x in explanation.lower() for x in ["certain", "definitely", "clearly", "absolutely"]):
+                confidence = "HIGH"
+            elif any(x in explanation.lower() for x in ["might", "may", "possible", "could", "uncertain"]):
+                confidence = "LOW"
+                
+        else:
+            confidence = "LOW"  # LLM was uncertain
+        
+        return is_affected, explanation, confidence
+    
+    # For descriptions with minimal version information but mentions vulnerability
+    # details, use simpler pattern matching
+    if any(x in cve_description.lower() for x in ["vulnerability", "exploit", "attack", "security"]):
+        # Use pattern matching since this might be a general vulnerability without specific version info
+        pattern_result = is_version_affected(cve_description, package_version)
+        return pattern_result, "Based on pattern matching for general vulnerability indicators", "LOW"
+    
+    # If we're not sure, be conservative and assume it could be affected
+    return True, "Unable to determine version specificity, conservatively assuming affected", "LOW"
+
 @tool
 def analyze_repository_health(repo_url: str) -> Dict[str, Any]:
     """
@@ -269,16 +459,23 @@ def search_cves_with_nvdlib(package_name: str, version: Optional[str] = None, ma
                         if hasattr(cve_item, 'vulnStatus'):
                             status = cve_item.vulnStatus
                         
+                        # Check if this version is affected by the vulnerability using our enhanced approach
+                        version_affected, explanation, confidence = analyze_version_affected(description, package_name, version)
+                        
                         # Create detailed CVE entry
-                        full_cve_details.append({
-                            "CVE_ID": cve_id,
-                            "Severity": severity,
-                            "CVSS_Score": cvss_score,
-                            "Details": description,
-                            "References": cve_references[:5],  # Limit to 5 references
-                            "Status": status,
-                            "Source": "nvdlib CPE search"
-                        })
+                        if not version or version_affected:
+                            full_cve_details.append({
+                                "CVE_ID": cve_id,
+                                "Severity": severity,
+                                "CVSS_Score": cvss_score,
+                                "Details": description,
+                                "References": cve_references[:5],  # Limit to 5 references
+                                "Status": status,
+                                "Source": "nvdlib CPE search",
+                                "Version_Affected": version_affected,
+                                "Version_Analysis": explanation if version else "No specific version provided",
+                                "Confidence": confidence if version else "HIGH"
+                            })
                     
                     # Break out of the retry loop if successful
                     break
@@ -398,16 +595,23 @@ def search_cves_with_nvdlib(package_name: str, version: Optional[str] = None, ma
                             if hasattr(cve_item, 'vulnStatus'):
                                 status = cve_item.vulnStatus
                             
+                            # Check if this version is affected by the vulnerability using our enhanced approach
+                            version_affected, explanation, confidence = analyze_version_affected(description, package_name, version)
+                            
                             # Create detailed CVE entry
-                            full_cve_details.append({
-                                "CVE_ID": cve_id,
-                                "Severity": severity,
-                                "CVSS_Score": cvss_score,
-                                "Details": description,
-                                "References": cve_references[:5],  # Limit to 5 references
-                                "Status": status,
-                                "Source": "nvdlib keyword search"
-                            })
+                            if not version or version_affected:
+                                full_cve_details.append({
+                                    "CVE_ID": cve_id,
+                                    "Severity": severity,
+                                    "CVSS_Score": cvss_score,
+                                    "Details": description,
+                                    "References": cve_references[:5],  # Limit to 5 references
+                                    "Status": status,
+                                    "Source": "nvdlib keyword search",
+                                    "Version_Affected": version_affected,
+                                    "Version_Analysis": explanation if version else "No specific version provided",
+                                    "Confidence": confidence if version else "HIGH"
+                                })
                         
                         # Break out of the attempt loop if successful
                         break
@@ -465,9 +669,60 @@ def search_vulnerabilities(package_name: str, version: Optional[str] = None, max
     try:
         nvdlib_results = search_cves_with_nvdlib(package_name=package_name, version=version, max_retries=max_retries)
         
+        # Update the CVE list to only include those that affect the specified version
+        if version:
+            # Filter the CVE list to only include those that were determined to affect the version
+            filtered_cve_ids = [cve["CVE_ID"] for cve in nvdlib_results["CVE_Details"] if cve.get("Version_Affected", True)]
+            nvdlib_results["CVEs"] = filtered_cve_ids
+            
+            # Add information about the filtering
+            nvdlib_results["Version_Specific"] = True
+            nvdlib_results["Version_Filtered_Count"] = len(filtered_cve_ids)
+            nvdlib_results["Total_Found_Count"] = len([cve["CVE_ID"] for cve in nvdlib_results["CVE_Details"]])
+            
+            # Group CVEs by confidence level
+            high_confidence_cves = []
+            medium_confidence_cves = []
+            low_confidence_cves = []
+            
+            # Add a summary of the version analysis
+            version_analysis_summary = []
+            for cve in nvdlib_results["CVE_Details"]:
+                if cve.get("Version_Affected", True):
+                    confidence = cve.get("Confidence", "LOW")
+                    summary_entry = {
+                        "CVE_ID": cve["CVE_ID"],
+                        "Affected": True,
+                        "Analysis": cve.get("Version_Analysis", "No analysis available"),
+                        "Confidence": confidence,
+                        "Severity": cve.get("Severity", "Unknown"),
+                        "CVSS_Score": cve.get("CVSS_Score")
+                    }
+                    version_analysis_summary.append(summary_entry)
+                    
+                    # Add to the appropriate confidence group
+                    if confidence == "HIGH":
+                        high_confidence_cves.append(cve["CVE_ID"])
+                    elif confidence == "MEDIUM":
+                        medium_confidence_cves.append(cve["CVE_ID"])
+                    else:  # LOW or undefined
+                        low_confidence_cves.append(cve["CVE_ID"])
+            
+            # Add the confidence groupings to the results
+            nvdlib_results["Version_Analysis_Summary"] = version_analysis_summary
+            nvdlib_results["High_Confidence_CVEs"] = high_confidence_cves
+            nvdlib_results["Medium_Confidence_CVEs"] = medium_confidence_cves
+            nvdlib_results["Low_Confidence_CVEs"] = low_confidence_cves
+            
+            print(f"Found {nvdlib_results['Version_Filtered_Count']} CVEs that likely affect version {version} out of {nvdlib_results['Total_Found_Count']} total CVEs")
+            print(f"  - {len(high_confidence_cves)} with HIGH confidence")
+            print(f"  - {len(medium_confidence_cves)} with MEDIUM confidence")
+            print(f"  - {len(low_confidence_cves)} with LOW confidence")
+        
         # If we found CVEs using nvdlib, return those results
         if nvdlib_results["CVEs"]:
-            print(f"Found {len(nvdlib_results['CVEs'])} CVEs using nvdlib")
+            if not version:
+                print(f"Found {len(nvdlib_results['CVEs'])} CVEs using nvdlib")
             return nvdlib_results
         else:
             print("No CVEs found using nvdlib, falling back to web search")
