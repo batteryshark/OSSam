@@ -325,11 +325,10 @@ print(f"Explanation: {result['Explanation']}")
 
 ## 📜 License Evaluation
 
-- **License:** MIT
-- **Status:** ⚠️ Requires Legal Approval
-- **Notes:** License not found in database
+- **License:** MIT License
+- **Status:** ✅ Allowed
+- **Notes:** The MIT License is permissive and business-friendly. It allows for commercial use, modification, distribution, and private use, with minimal restrictions. (Normalized from 'MIT License' to 'MIT')
 
-> **Action Required:** This license requires legal approval before use.
 
 ## 🔒 Security Evaluation
 
