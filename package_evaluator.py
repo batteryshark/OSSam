@@ -643,7 +643,8 @@ def package_evaluator(package_name: str) -> Dict[str, Any]:
         time.sleep(2)
         
         from security_researcher import security_researcher
-        security_info = security_researcher(package_name)
+        # Pass the entire package_info dictionary to security_researcher instead of just the name
+        security_info = security_researcher(package_info)
         
         # Specifically check and enhance CVE information if needed
         if "CVEs" in security_info and security_info["CVEs"]:
