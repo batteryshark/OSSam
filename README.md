@@ -395,6 +395,15 @@ print(f"Explanation: {result['Explanation']}")
 - **Do not Use**: The package has serious security vulnerabilities or licensing issues that make it inadvisable to use
 - **Seek Clarification**: More information is needed to make a determination about using this package
 
+
+## Future Work
+
+- Split Security Researcher agent into additional agents.
+- Artifact Code Review agent to pull a repo and perform a quick code review.
+- Specialized agents to assess containers, LLMs, other weird things I guess we want?
+- Asset Inventory agent to log requests in an asset management system.
+- Integrations with other agent teams such as code review teams, package scanning automation, etc.
+
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
