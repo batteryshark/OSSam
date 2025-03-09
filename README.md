@@ -303,67 +303,81 @@ print(f"Explanation: {result['Explanation']}")
 ### Markdown Report Example
 
 ```markdown
-# OSS Assessment Report: E2B Secure Open Source Cloud Runtime current
+# OSS Assessment Report: axios 1.8.2
 
-*Generated on: 2025-03-08 18:02:21*
+*Generated on: 2025-03-08 18:31:49*
 
 
 ## 📦 Package Information
 
-- **Name:** E2B Secure Open Source Cloud Runtime
-- **Requested Version:** current
-- **Latest Version:** 1.0.4
-- **Primary Language:** TypeScript, Python, JavaScript, Go
-- **Description:** E2B is an open-source infrastructure that allows you to run AI-generated code in secure, isolated cloud sandboxes. It provides a secure runtime environment for AI applications and agents, allowing them to use the same tools as humans in a secure cloud environment.
-- **Repository:** [https://github.com/e2b-dev/e2b](https://github.com/e2b-dev/e2b)
-- **Maintained By:** e2b-dev
+- **Name:** axios
+- **Requested Version:** 1.8.2
+- **Latest Version:** 1.8.2
+- **Primary Language:** JavaScript
+- **Description:** Axios is a promise-based HTTP client for the browser and Node.js.
+- **Repository:** [https://github.com/axios/axios](https://github.com/axios/axios)
+- **Maintained By:** Matt Zabriskie, maintained by the community
 
 ## 🗒️ Package Evaluation
 
 - **Advisory:** ❗ Use with Caution
-- **Explanation:** This package can be used with caution, but be aware of the following risks: Contains known vulnerabilities that may need mitigation, Has medium security risk that requires attention, Has reported security issues that need to be addressed and Using an older version (current) instead of the latest (1.0.4). The implementation risk rating is Medium due to the presence of a high severity CVE (CVE-2023-6932) and potential security vulnerabilities associated with LLM-integrated frameworks, such as RCE, untrusted code execution, and prompt injection attacks. While E2B focuses on providing secure code execution environments, these vulnerabilities and issues need to be carefully considered and mitigated. The repository's relatively young age and the lack of an explicitly stated number of contributors also contribute to the Medium risk rating. License (MIT) is permitted for use.
+- **Explanation:** This package can be used with caution, but be aware of the following risks: Contains known vulnerabilities that may need mitigation, Has medium security risk that requires attention, Has reported security issues that need to be addressed and License (MIT) may require additional review or legal approval. Axios has known high and medium severity vulnerabilities, including SSRF, XSS, XSRF-TOKEN leakage, and inefficient regular expression complexity. It's crucial to keep Axios updated to the latest stable version to patch known vulnerabilities. License (MIT) requires legal approval.
 
 ## 📜 License Evaluation
 
 - **License:** MIT
-- **Status:** ✅ Allowed
-- **Notes:** The MIT License is permissive and business-friendly. It allows for commercial use, modification, distribution, and private use, with minimal restrictions.
+- **Status:** ⚠️ Requires Legal Approval
+- **Notes:** License not found in database
+
+> **Action Required:** This license requires legal approval before use.
 
 ## 🔒 Security Evaluation
 
 - **Security Risk:** ⚠️ Medium
-- **Risk Assessment:** The implementation risk rating is Medium due to the presence of a high severity CVE (CVE-2023-6932) and potential security vulnerabilities associated with LLM-integrated frameworks, such as RCE, untrusted code execution, and prompt injection attacks. While E2B focuses on providing secure code execution environments, these vulnerabilities and issues need to be carefully considered and mitigated. The repository's relatively young age and the lack of an explicitly stated number of contributors also contribute to the Medium risk rating.
+- **Risk Assessment:** Axios has known high and medium severity vulnerabilities, including SSRF, XSS, XSRF-TOKEN leakage, and inefficient regular expression complexity. It's crucial to keep Axios updated to the latest stable version to patch known vulnerabilities.
 
 ### Known Vulnerabilities:
 
-**❓ CVE-2023-6932 (HIGH)**
-- Use-after-free vulnerability in the Linux kernel's ipv4: igmp component, which can be exploited for local privilege escalation.
-- Status: ❌ Modified
+**❌ CVE-2024-39338 (High)**
+- SSRF vulnerability affecting axios 1.7.2
+- Status: ❌ Unpatched
+
+**⚠️ CVE-2020-28168 (Medium)**
+- Proxy bypass vulnerability
+- Status: ❌ Unpatched
+
+**⚠️ CVE-2023-45857 (Medium)**
+- XSRF-TOKEN Leakage affecting Axios 1.5.1
+- Status: ❌ Unpatched
+
+**❌ CVE-2021-3749 (High)**
+- Inefficient Regular Expression Complexity
+- Status: ❌ Unpatched
 
 
 ### Other Security Concerns:
 
-- Potential RCE vulnerabilities associated with LLM-integrated frameworks
-- Risk of untrusted code execution
-- Risk of prompt injection attacks
+- XSS vulnerabilities in older versions
 
 ### Repository Health:
 
-- Relatively young repository (1 year and 10 months to 2 years old)
-- Exact number of contributors is not explicitly stated
-- Potential RCE vulnerabilities associated with LLM-integrated frameworks
-- Risk of untrusted code execution and prompt injection attacks
-- Common bugs and issues, including timeout errors and sandbox creation failures
+- Repository age (created in 2014)
+- Large number of open issues (569)
+- SSRF vulnerabilities (CVE-2024-39338, CVE-2020-28168)
+- XSS vulnerabilities in older versions
+- XSRF-TOKEN Leakage (CVE-2023-45857)
+- Inefficient Regular Expression Complexity (CVE-2021-3749)
+- Proxy Bypass vulnerability
 
 ## 📚 References
 
-1. https://github.com/e2b-dev/e2b
-2. https://security@langchain.dev
-3. https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit?id=e2b706c691905fe78468c361aaabc719d0a496f1
-4. https://kernel.dance/e2b706c691905fe78468c361aaabc719d0a496f1
-5. https://lists.debian.org/debian-lts-announce/2024/01/msg00004.html
-6. https://lists.debian.org/debian-lts-announce/2024/01/msg00005.html
-7. http://packetstormsecurity.com/files/177029/Kernel-Live-Patch-Security-Notice-LSN-0100-1.html
+1. Search results for 'axios latest version'
+2. Search results for 'axios programming language'
+3. Search results for 'axios license'
+4. Search results for 'axios source code repository'
+5. Search results for 'axios package owner'
+6. https://github.com/axios/axios
+7. Web search results for 'axios security vulnerabilities'
 ```
 
 ## License Statuses
