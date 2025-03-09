@@ -303,25 +303,25 @@ print(f"Explanation: {result['Explanation']}")
 ### Markdown Report Example
 
 ```markdown
-# OSS Assessment Report: axios 1.8.2
+# OSS Assessment Report: ollama 0.5.13-rc1
 
-*Generated on: 2025-03-08 18:31:49*
+*Generated on: 2025-03-08 20:58:09*
 
 
 ## 📦 Package Information
 
-- **Name:** axios
-- **Requested Version:** 1.8.2
-- **Latest Version:** 1.8.2
-- **Primary Language:** JavaScript
-- **Description:** Axios is a promise-based HTTP client for the browser and Node.js.
-- **Repository:** [https://github.com/axios/axios](https://github.com/axios/axios)
-- **Maintained By:** Matt Zabriskie, maintained by the community
+- **Name:** ollama
+- **Requested Version:** 0.5.13-rc1
+- **Latest Version:** 0.5.13-rc1
+- **Primary Language:** Go
+- **Description:** Ollama is an open-source tool that makes it easy to run and manage large language models (LLMs) on your computer.
+- **Repository:** [https://github.com/ollama/ollama](https://github.com/ollama/ollama)
+- **Maintained By:** Michael Chiang and Jeffrey Morgan (ollama GitHub organization)
 
 ## 🗒️ Package Evaluation
 
 - **Advisory:** ❗ Use with Caution
-- **Explanation:** This package can be used with caution, but be aware of the following risks: Contains known vulnerabilities that may need mitigation, Has medium security risk that requires attention, Has reported security issues that need to be addressed and License (MIT) may require additional review or legal approval. Axios has known high and medium severity vulnerabilities, including SSRF, XSS, XSRF-TOKEN leakage, and inefficient regular expression complexity. It's crucial to keep Axios updated to the latest stable version to patch known vulnerabilities. License (MIT) requires legal approval.
+- **Explanation:** This package can be used with caution, but be aware of the following risks: Contains known vulnerabilities that may need mitigation, Has medium security risk that requires attention and Has reported security issues that need to be addressed. Multiple high-severity CVEs exist, including remote code execution and file existence disclosure vulnerabilities. Exposed APIs and insecure default configurations also pose security risks. While some vulnerabilities have been patched in later versions, the presence of unpatched vulnerabilities and potential for misconfiguration leads to a medium risk rating. License (MIT License) is permitted for use.
 
 ## 📜 License Evaluation
 
@@ -329,54 +329,56 @@ print(f"Explanation: {result['Explanation']}")
 - **Status:** ✅ Allowed
 - **Notes:** The MIT License is permissive and business-friendly. It allows for commercial use, modification, distribution, and private use, with minimal restrictions. (Normalized from 'MIT License' to 'MIT')
 
-
 ## 🔒 Security Evaluation
 
 - **Security Risk:** ⚠️ Medium
-- **Risk Assessment:** Axios has known high and medium severity vulnerabilities, including SSRF, XSS, XSRF-TOKEN leakage, and inefficient regular expression complexity. It's crucial to keep Axios updated to the latest stable version to patch known vulnerabilities.
+- **Risk Assessment:** Multiple high-severity CVEs exist, including remote code execution and file existence disclosure vulnerabilities. Exposed APIs and insecure default configurations also pose security risks. While some vulnerabilities have been patched in later versions, the presence of unpatched vulnerabilities and potential for misconfiguration leads to a medium risk rating.
 
 ### Known Vulnerabilities:
 
-**❌ CVE-2024-39338 (High)**
-- SSRF vulnerability affecting axios 1.7.2
-- Status: ❌ Unpatched
+**❓ CVE-2024-39720 (HIGH)**
+- An issue was discovered in Ollama before 0.1.46. An attacker can use two HTTP requests to upload a malformed GGUF file containing just 4 bytes starting with the GGUF custom magic header. By leveraging a custom Modelfile that includes a FROM statement pointing to the attacker-controlled blob file, the attacker can crash the application through the CreateModel route, leading to a segmentation fault (signal SIGSEGV: segmentation violation).
+- Status: ❌ Awaiting Analysis
 
-**⚠️ CVE-2020-28168 (Medium)**
-- Proxy bypass vulnerability
-- Status: ❌ Unpatched
+**❓ CVE-2024-45436 (HIGH)**
+- extractFromZipFile in model.go in Ollama before 0.1.47 can extract members of a ZIP archive outside of the parent directory.
+- Status: ❌ Analyzed
 
-**⚠️ CVE-2023-45857 (Medium)**
-- XSRF-TOKEN Leakage affecting Axios 1.5.1
-- Status: ❌ Unpatched
+**❓ CVE-2024-37032 (Unknown)**
+- Ollama before 0.1.34 does not validate the format of the digest (sha256 with 64 hex digits) when getting the model path, and thus mishandles the TestGetBlobsPath test cases such as fewer than 64 hex digits, more than 64 hex digits, or an initial ../ substring.
+- Status: ❌ Awaiting Analysis
 
-**❌ CVE-2021-3749 (High)**
-- Inefficient Regular Expression Complexity
-- Status: ❌ Unpatched
+**❓ CVE-2024-39722 (HIGH)**
+- An issue was discovered in Ollama before 0.1.46. It exposes which files exist on the server on which it is deployed via path traversal in the api/push route.
+- Status: ❌ Awaiting Analysis
+
+**❓ CVE-2024-39719 (HIGH)**
+- An issue was discovered in Ollama through 0.3.14. File existence disclosure can occur via api/create. When calling the CreateModel route with a path parameter that does not exist, it reflects the "File does not exist" error message to the attacker, providing a primitive for file existence on the server.
+- Status: ❌ Awaiting Analysis
 
 
 ### Other Security Concerns:
 
-- XSS vulnerabilities in older versions
+- Exposed APIs without authentication
+- Potential for model poisoning and theft
+- Default configurations with insecure settings
 
 ### Repository Health:
 
-- Repository age (created in 2014)
-- Large number of open issues (569)
-- SSRF vulnerabilities (CVE-2024-39338, CVE-2020-28168)
-- XSS vulnerabilities in older versions
-- XSRF-TOKEN Leakage (CVE-2023-45857)
-- Inefficient Regular Expression Complexity (CVE-2021-3749)
-- Proxy Bypass vulnerability
+- Relatively new repository (emerged in 2024)
+- Over 100 contributors
+- Last commit was 3 days ago
+- High activity with many issues and pull requests
 
 ## 📚 References
 
-1. Search results for 'axios latest version'
-2. Search results for 'axios programming language'
-3. Search results for 'axios license'
-4. Search results for 'axios source code repository'
-5. Search results for 'axios package owner'
-6. https://github.com/axios/axios
-7. Web search results for 'axios security vulnerabilities'
+1. https://github.com/ollama/ollama
+2. https://www.cve.org/CVERecord?id=CVE-2024-39720
+3. https://www.cve.org/CVERecord?id=CVE-2024-45436
+4. https://www.cve.org/CVERecord?id=CVE-2024-37032
+5. https://www.cve.org/CVERecord?id=CVE-2024-39722
+6. https://www.cve.org/CVERecord?id=CVE-2024-39719
+
 ```
 
 ## License Statuses
