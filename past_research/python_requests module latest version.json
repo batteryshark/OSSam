@@ -1,0 +1,66 @@
+{
+  "Verdict": "Use with Caution",
+  "Explanation": "This package can be used with caution, but be aware of the following risks: Contains known vulnerabilities that may need mitigation, Has medium security risk that requires attention and Has reported security issues that need to be addressed. While the repository is actively maintained and has a large number of contributors, there are some known security vulnerabilities. CVE-2018-18074 and CVE-2024-35195 are the most concerning. Ensure the requests library is updated to at least version 2.32.0 to mitigate these risks. Other potential vulnerabilities may exist, requiring ongoing monitoring. License (Apache2) is permitted for use.",
+  "PackageInfo": {
+    "Name": "requests",
+    "Latest Package Version": "2.32.3",
+    "Requested Package Version": "2.32.3",
+    "Primary Language": "Python",
+    "License Type": "Apache2",
+    "Description": "Requests is a simple and elegant HTTP library for Python, built for human beings. It allows you to send HTTP/1.1 requests extremely easily.",
+    "Link to Source Code": "https://github.com/psf/requests",
+    "Package Owner": "Python Software Foundation",
+    "References": [
+      "Search results for 'python requests package'",
+      "Search results for 'python requests package latest version'",
+      "Search results for 'python requests package license'",
+      "Search results for 'python requests package source code'",
+      "Search results for 'python requests package owner'"
+    ]
+  },
+  "LicenseInfo": {
+    "Name": "Apache2",
+    "Status": "Allowed",
+    "Notes": "The Apache 2.0 License is permissive and allows for commercial use. It includes an express grant of patent rights from contributors to users. (Normalized from 'Apache2' to 'Apache 2.0')",
+    "References": [
+      "https://github.com/psf/requests"
+    ]
+  },
+  "SecurityInfo": {
+    "Potential Concerns": [
+      "Repository is old, but actively maintained.",
+      "Large number of contributors, indicating good support.",
+      "Recent commits and active development.",
+      "CVE-2018-18074: Sending Authorization header over HTTP after HTTPS redirect.",
+      "Versions prior to 2.32.0 vulnerable to CVE-2024-35195: Incorrect control flow may allow disabling certificate verification."
+    ],
+    "CVEs": [
+      {
+        "CVE_ID": "CVE-2018-18074",
+        "Severity": "Medium",
+        "Description": "Requests package before 2.20.0 sends an HTTP Authorization header to an http URI upon receiving a same-hostname https-to-http redirect, which makes it easier for remote attackers to discover credentials by sniffing the network.",
+        "Status": "Patched in 2.20.0"
+      },
+      {
+        "CVE_ID": "CVE-2024-35195",
+        "Severity": "Medium",
+        "Description": "If a Requests Session makes an initial request with verify=False (disabling certificate verification), all subsequent requests to the same host will continue to ignore certificate verification, regardless of later changes to the verify value.",
+        "Status": "Patched in 2.32.0"
+      }
+    ],
+    "Other Security Bugs": [
+      "Possible other vulnerabilities listed in Snyk vulnerability database and Safety DB."
+    ],
+    "Implementation Risk Rating": "Medium",
+    "Implementation Risk Rating Explanation": "While the repository is actively maintained and has a large number of contributors, there are some known security vulnerabilities. CVE-2018-18074 and CVE-2024-35195 are the most concerning. Ensure the requests library is updated to at least version 2.32.0 to mitigate these risks. Other potential vulnerabilities may exist, requiring ongoing monitoring.",
+    "References": [
+      "https://github.com/psf/requests",
+      "https://security.snyk.io/package/pip/requests",
+      "https://app.opencve.io/cve/?vendor=python&product=requests",
+      "https://www.cvedetails.com/version/1371351/Python-Requests-2.31.0.html",
+      "https://data.safetycli.com/packages/pypi/requests/vulnerabilities",
+      "https://nvd.nist.gov/vuln/detail/CVE-2018-18074",
+      "https://docs.python-requests.org/en/latest/community/vulnerabilities.html"
+    ]
+  }
+}

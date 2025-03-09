@@ -1,0 +1,84 @@
+MIT:
+  Name: MIT
+  Status: Allowed
+  Notes: The MIT License is permissive and business-friendly. It allows for commercial use, modification, distribution, and private use, with minimal restrictions.
+
+Apache 2.0:
+  Name: Apache 2.0
+  Status: Allowed
+  Notes: The Apache 2.0 License is permissive and allows for commercial use. It includes an express grant of patent rights from contributors to users.
+
+BSD-3-Clause:
+  Name: BSD-3-Clause
+  Status: Allowed
+  Notes: The 3-Clause BSD License is permissive and allows for nearly unlimited freedom with the software as long as BSD copyright and license notice is included.
+
+BSD-2-Clause:
+  Name: BSD-2-Clause
+  Status: Allowed
+  Notes: The 2-Clause BSD License is similar to the 3-Clause BSD License but without the non-endorsement clause.
+
+GPL-3.0:
+  Name: GPL-3.0
+  Status: See Notes
+  Notes: GPL-3.0 is a copyleft license that may require derivative works to be distributed under the same license. Ensure that you're not incorporating this code directly into proprietary software.
+
+GPL-2.0:
+  Name: GPL-2.0
+  Status: See Notes
+  Notes: GPL-2.0 is a copyleft license that may require derivative works to be distributed under the same license. It lacks the patent provisions of GPL-3.0.
+
+AGPL-3.0:
+  Name: AGPL-3.0
+  Status: Requires Legal Approval
+  Notes: AGPL-3.0 is a strong copyleft license that requires source code distribution even for applications accessed over a network. This can have significant implications for SaaS products.
+
+LGPL-3.0:
+  Name: LGPL-3.0
+  Status: See Notes
+  Notes: LGPL-3.0 allows linking the licensed library, without requiring the linked work to be under the same license. However, any modifications to the library itself must be distributed under LGPL.
+
+LGPL-2.1:
+  Name: LGPL-2.1
+  Status: See Notes
+  Notes: LGPL-2.1 is similar to LGPL-3.0 but with some differences in terms and patent provisions.
+
+MPL-2.0:
+  Name: MPL-2.0
+  Status: Allowed
+  Notes: The Mozilla Public License 2.0 is a copyleft license that allows for combination with proprietary code more easily than GPL.
+
+ISC:
+  Name: ISC
+  Status: Allowed
+  Notes: The ISC License is functionally equivalent to the simplified BSD and MIT licenses but with different wording.
+
+Unlicense:
+  Name: Unlicense
+  Status: Allowed
+  Notes: The Unlicense is a public domain dedication, effectively allowing any use without restrictions.
+
+CC0-1.0:
+  Name: CC0-1.0
+  Status: Allowed
+  Notes: Creative Commons Zero is a public domain dedication, effectively allowing any use without restrictions.
+
+Proprietary:
+  Name: Proprietary
+  Status: Not Allowed
+  Notes: Proprietary licenses typically restrict use, modification, and redistribution. These require explicit legal approval for commercial use.
+
+EPL-2.0:
+  Name: EPL-2.0
+  Status: See Notes
+  Notes: The Eclipse Public License 2.0 is a copyleft license with patent grants. It allows for commercial use but has some distribution requirements.
+
+CDDL-1.0:
+  Name: CDDL-1.0
+  Status: Requires Legal Approval
+  Notes: The Common Development and Distribution License is a file-based copyleft license that may conflict with GPL in certain use cases.
+
+Artistic-2.0:
+  Name: Artistic-2.0
+  Status: Allowed
+  Notes: The Artistic License 2.0 is a permissive license commonly used in the Perl community. 

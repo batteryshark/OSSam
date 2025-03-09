@@ -1,0 +1,77 @@
+{
+  "Verdict": "Do not Use",
+  "Explanation": "Log4j version 2.14.1 is vulnerable to critical remote code execution vulnerability (CVE-2021-44228), also known as Log4Shell. This vulnerability allows attackers to execute arbitrary code on affected systems. Although the repository is actively maintained, the presence of this critical vulnerability warrants a High-risk rating. License (Apache License 2.0) is permitted for use.",
+  "PackageInfo": {
+    "Name": "log4j",
+    "Latest Package Version": "2.17.1",
+    "Requested Package Version": "2.14.1",
+    "Primary Language": "Java",
+    "License Type": "Apache License 2.0",
+    "Description": "Log4j is a versatile, open-source, Java-based logging framework created by the Apache Software Foundation. It records important information within a program, such as error messages and user inputs, helping developers monitor and identify potential problems. It's used across a wide range of software applications and online services.",
+    "Link to Source Code": "https://git-wip-us.apache.org/repos/asf/logging-log4j2.git",
+    "Package Owner": "Apache Software Foundation",
+    "References": [
+      "https://logging.apache.org/log4j/2.x/",
+      "https://mvnrepository.com/artifact/org.apache.logging.log4j",
+      "https://www.geeksforgeeks.org/apache-log4j/",
+      "https://logging.apache.org/log4j/2.x/manual/index.html",
+      "https://www.techtarget.com/whatis/feature/Log4j-explained-Everything-you-need-to-know",
+      "https://git-wip-us.apache.org/repos/asf/logging-log4j2.git"
+    ]
+  },
+  "LicenseInfo": {
+    "Name": "Apache License 2.0",
+    "Status": "Allowed",
+    "Notes": "The Apache 2.0 License is permissive and allows for commercial use. It includes an express grant of patent rights from contributors to users. (Normalized from 'Apache License 2.0' to 'Apache 2.0')",
+    "References": [
+      "https://git-wip-us.apache.org/repos/asf/logging-log4j2.git"
+    ]
+  },
+  "SecurityInfo": {
+    "Potential Concerns": [
+      "Vulnerable to remote code execution (CVE-2021-44228)",
+      "Other CVEs related to denial of service and information leakage"
+    ],
+    "CVEs": [
+      {
+        "CVE_ID": "CVE-2021-44228",
+        "Severity": "CRITICAL",
+        "Description": "Remote code execution vulnerability",
+        "Status": "Unpatched in version 2.14.1"
+      },
+      {
+        "CVE_ID": "CVE-2021-45046",
+        "Severity": "CRITICAL",
+        "Description": "Incomplete fix for CVE-2021-44228",
+        "Status": "Unpatched in version 2.14.1"
+      },
+      {
+        "CVE_ID": "CVE-2021-45105",
+        "Severity": "MEDIUM",
+        "Description": "Denial of service vulnerability",
+        "Status": "Unpatched in version 2.14.1"
+      },
+      {
+        "CVE_ID": "CVE-2021-44832",
+        "Severity": "MEDIUM",
+        "Description": "Remote code execution vulnerability via JDBC Appender",
+        "Status": "Unpatched in version 2.14.1"
+      }
+    ],
+    "Other Security Bugs": [],
+    "Implementation Risk Rating": "High",
+    "Implementation Risk Rating Explanation": "Log4j version 2.14.1 is vulnerable to critical remote code execution vulnerability (CVE-2021-44228), also known as Log4Shell. This vulnerability allows attackers to execute arbitrary code on affected systems. Although the repository is actively maintained, the presence of this critical vulnerability warrants a High-risk rating.",
+    "References": [
+      "https://github.com/apache/logging-log4j2",
+      "https://www.cisa.gov/news-events/cybersecurity-advisories/aa21-356a",
+      "https://logging.apache.org/log4j/2.x/security.html",
+      "https://www.cvedetails.com/version/677194/Apache-Log4j-2.14.1.html",
+      "https://blog.checkpoint.com/security/protecting-against-cve-2021-44228-apache-log4j2-versions-2-14-1/",
+      "https://www.cisa.gov/news-events/alerts/2021/12/13/cisa-creates-webpage-apache-log4j-vulnerability-cve-2021-44228",
+      "https://blog.cloudflare.com/inside-the-log4j2-vulnerability-cve-2021-44228/",
+      "https://community.citrix.com/articles/security/guidance-for-reducing-apache-log4j-security-vulnerability-risk-with-citrix-waf-cve-2021-44228cve-2021-45046cve-2021-45105-r283/",
+      "https://github.com/advisories/GHSA-jfh8-c2jp-5v3q",
+      "https://www.cyber.gc.ca/en/alerts/active-exploitation-apache-log4j-vulnerability"
+    ]
+  }
+}
