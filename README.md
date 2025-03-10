@@ -142,6 +142,20 @@ python analyze_package.py "package_name" [options]
    python analyze_package.py "lodash" -f markdown -o lodash_report.md
    ```
 
+### Slack Bot Integration
+
+OSSam includes a Slack bot that allows users to analyze packages directly from Slack:
+
+1. Start the Slack bot:
+   ```
+   python ossam_slack_bot.py
+   ```
+
+2. Send a direct message to the bot with a package name, such as `lodash` or `express 4.17.1`
+
+3. The bot will process the request and post the analysis results in a thread
+
+For detailed setup instructions, see [README_SLACKBOT.md](README_SLACKBOT.md).
 ## Individual Components
 
 ### Package Researcher

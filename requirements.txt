@@ -24,6 +24,12 @@ argparse>=1.4.0
 # For semantic version parsing
 semver>=2.13.0
 
+# Agent dependencies
 smolagents>=0.1.0
 ollama>=0.1.7
-google-generativeai>=0.3.0 
+google-generativeai>=0.3.0
+
+# Slack integration dependencies
+slack-bolt>=1.18.0
+slack-sdk>=3.21.3
+python-dotenv>=1.0.0
