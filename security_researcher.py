@@ -39,17 +39,25 @@ def sleep_with_backoff(attempt=1, base_time=2, max_time=60):
     print(f"Sleeping for {sleep_time:.2f} seconds to avoid rate limits...")
     time.sleep(sleep_time)
 
-def is_version_affected(cve_description: str, package_version: str) -> bool:
+def is_version_affected(cve_description: str, package_name: str, package_version: str) -> bool:
     """
     Determine if a specific package version is affected by a vulnerability based on its description.
     
     Args:
         cve_description: The description of the CVE
+        package_name: Name of the package
         package_version: The specific version to check
         
     Returns:
         Boolean indicating if the version is potentially affected
     """
+    # Check if the package name is actually mentioned in the CVE description
+    # This helps avoid associating CVEs with unrelated packages
+    if package_name.lower() not in cve_description.lower():
+        # Some CVEs might refer to components by different names, so check for parts of compound names
+        if not any(common_term.lower() in cve_description.lower() for common_term in package_name.lower().split('-')):
+            return False
+    
     # If no specific version is provided, assume it's affected
     if not package_version:
         return True
@@ -168,10 +176,10 @@ def check_version_with_llm(cve_description: str, package_name: str, package_vers
             else:
                 print(f"Failed to use Gemini after {max_retries} attempts: {str(e)}")
                 # If there's an error after all retries, fall back to the simple pattern-based check
-                return is_version_affected(cve_description, package_version), f"Error with Gemini check after {max_retries} attempts: {str(e)}"
+                return is_version_affected(cve_description, package_name, package_version), f"Error with Gemini check after {max_retries} attempts: {str(e)}"
     
     # Fallback in case we somehow exit the loop
-    return is_version_affected(cve_description, package_version), "Failed to get a response from Gemini"
+    return is_version_affected(cve_description, package_name, package_version), "Failed to get a response from Gemini"
 
 def analyze_version_affected(cve_description: str, package_name: str, package_version: str, max_retries: int = 5) -> Tuple[bool, str, str]:
     """
@@ -186,6 +194,16 @@ def analyze_version_affected(cve_description: str, package_name: str, package_ve
     Returns:
         Tuple of (is_affected, explanation, confidence)
     """
+    # Check if the package name is actually mentioned in the CVE description
+    # This is to avoid associating CVEs with unrelated packages
+    # Note: This is a basic check, but CPE matching might identify related packages
+    # even when the exact package name is not in the description
+    if package_name.lower() not in cve_description.lower():
+        # Some CVEs might refer to components by different names, so we don't always return False here
+        # Instead, we'll mark it with a low confidence that needs manual review
+        if not any(common_term.lower() in cve_description.lower() for common_term in package_name.lower().split('-')):
+            return False, f"Package '{package_name}' is not mentioned in this CVE description", "HIGH"
+    
     # If no version is provided, it's always considered affected
     if not package_version:
         return True, "No specific version provided to check", "HIGH"
@@ -251,7 +269,7 @@ def analyze_version_affected(cve_description: str, package_name: str, package_ve
     # details, use simpler pattern matching
     if any(x in cve_description.lower() for x in ["vulnerability", "exploit", "attack", "security"]):
         # Use pattern matching since this might be a general vulnerability without specific version info
-        pattern_result = is_version_affected(cve_description, package_version)
+        pattern_result = is_version_affected(cve_description, package_name, package_version)
         return pattern_result, "Based on pattern matching for general vulnerability indicators", "LOW"
     
     # If we're not sure, be conservative and assume it could be affected
@@ -497,18 +515,34 @@ def search_cves_with_nvdlib(package_name: str, version: Optional[str] = None, ma
                         
                         # Create detailed CVE entry
                         if not version or version_affected:
-                            full_cve_details.append({
-                                "CVE_ID": cve_id,
-                                "Severity": severity,
-                                "CVSS_Score": cvss_score,
-                                "Details": description,
-                                "References": cve_references[:5],  # Limit to 5 references
-                                "Status": status,
-                                "Source": "nvdlib CPE search",
-                                "Version_Affected": version_affected,
-                                "Version_Analysis": explanation if version else "No specific version provided",
-                                "Confidence": confidence if version else "HIGH"
-                            })
+                            # NEW: Check if the package name is mentioned in the CVE description or metadata before adding it
+                            package_mentioned = False
+                            
+                            # Check the description for the package name
+                            if package_name.lower() in description.lower():
+                                package_mentioned = True
+                            
+                            # If not in description, check if it's mentioned in any references
+                            if not package_mentioned and cve_references:
+                                for ref in cve_references:
+                                    if package_name.lower() in ref.lower():
+                                        package_mentioned = True
+                                        break
+                            
+                            # Only add to results if the package is actually mentioned somewhere
+                            if package_mentioned:
+                                full_cve_details.append({
+                                    "CVE_ID": cve_id,
+                                    "Severity": severity,
+                                    "CVSS_Score": cvss_score,
+                                    "Details": description,
+                                    "References": cve_references[:5],  # Limit to 5 references
+                                    "Status": status,
+                                    "Source": "nvdlib CPE search",
+                                    "Version_Affected": version_affected,
+                                    "Version_Analysis": explanation if version else "No specific version provided",
+                                    "Confidence": confidence if version else "HIGH"
+                                })
                     
                     # Break out of the retry loop if successful
                     break
@@ -638,18 +672,34 @@ def search_cves_with_nvdlib(package_name: str, version: Optional[str] = None, ma
                             
                             # Create detailed CVE entry
                             if not version or version_affected:
-                                full_cve_details.append({
-                                    "CVE_ID": cve_id,
-                                    "Severity": severity,
-                                    "CVSS_Score": cvss_score,
-                                    "Details": description,
-                                    "References": cve_references[:5],  # Limit to 5 references
-                                    "Status": status,
-                                    "Source": "nvdlib keyword search",
-                                    "Version_Affected": version_affected,
-                                    "Version_Analysis": explanation if version else "No specific version provided",
-                                    "Confidence": confidence if version else "HIGH"
-                                })
+                                # NEW: Check if the package name is mentioned in the CVE description or metadata before adding it
+                                package_mentioned = False
+                                
+                                # Check the description for the package name
+                                if package_name.lower() in description.lower():
+                                    package_mentioned = True
+                                
+                                # If not in description, check if it's mentioned in any references
+                                if not package_mentioned and cve_references:
+                                    for ref in cve_references:
+                                        if package_name.lower() in ref.lower():
+                                            package_mentioned = True
+                                            break
+                                
+                                # Only add to results if the package is actually mentioned somewhere
+                                if package_mentioned:
+                                    full_cve_details.append({
+                                        "CVE_ID": cve_id,
+                                        "Severity": severity,
+                                        "CVSS_Score": cvss_score,
+                                        "Details": description,
+                                        "References": cve_references[:5],  # Limit to 5 references
+                                        "Status": status,
+                                        "Source": "nvdlib keyword search",
+                                        "Version_Affected": version_affected,
+                                        "Version_Analysis": explanation if version else "No specific version provided",
+                                        "Confidence": confidence if version else "HIGH"
+                                    })
                         
                         # Break out of the attempt loop if successful
                         break
@@ -682,12 +732,25 @@ def search_cves_with_nvdlib(package_name: str, version: Optional[str] = None, ma
     # Collect all unique references from both CPE searches and CVE data
     all_refs = list(set(references))
     
+    # Count CVEs that were filtered out due to not mentioning the package name
+    total_potential_cves = 0
+    for result_set in search_results.values():
+        if isinstance(result_set, list):
+            total_potential_cves += len(result_set)
+    
+    package_relevant_cves = len(full_cve_details)
+    filtered_out_cves = total_potential_cves - package_relevant_cves
+    
+    if filtered_out_cves > 0:
+        print(f"Filtered out {filtered_out_cves} CVEs that did not mention the package '{package_name}'")
+    
     return {
         "Package": package_name,
         "Version": version,
         "CVEs": cve_list,
         "CVE_Details": full_cve_details,
-        "References": all_refs
+        "References": all_refs,
+        "CVEs_Filtered_Out": filtered_out_cves
     }
 
 @tool
