@@ -1,0 +1,208 @@
+{
+  "guidance": "Use with Caution",
+  "explanation": "Based on the available information, the package appears to be generally safe for use, but some caution is advised. The license is compliant, and the package has a healthy status. However, potential vulnerabilities exist that need to be monitored.",
+  "package_info": {
+    "Name": "hiredis-cluster",
+    "Latest_Package_Version": "0.14.0",
+    "Requested_Package_Version": "0.14.0",
+    "Primary_Language": "C",
+    "License_Type": "BSD 3-Clause \"New\" or \"Revised\" License",
+    "Description": "hiredis-cluster is a C client library for cluster deployments of the Redis database. It utilizes Hiredis for connections to each Redis node. It is a fork of Hiredis-vip with improvements like external Hiredis dependency, SSL/TLS support (Redis 6+), IPv6 support, and authentication using AUTH.",
+    "Link_to_Source_Code": "https://github.com/Nordix/hiredis-cluster",
+    "Package_Owner": "Nordix (sponsored by Ericsson)",
+    "References": [
+      "https://github.com/Nordix/hiredis-cluster",
+      "https://www.szsige.com/gitlab/ruanhaishen/hiredis/-/blob/34b7f7a0ff9cc21ab50ce32e0ff620f4c1248058/CHANGELOG.md",
+      "https://gitlab.apertis.org/pkg/hiredis/-/blob/a56bebd8eb76b8be12bca8ec462e16090ecfb3c6/CHANGELOG.md",
+      "https://github.com/Nordix/hiredis-cluster/releases",
+      "https://redis.io/learn/develop/c",
+      "https://github.com/Nordix/hiredis-cluster/blob/master/COPYING"
+    ],
+    "Documentation_URL": "Unknown"
+  },
+  "license_info": {
+    "Name": "Unknown",
+    "Status": "Requires Legal Approval",
+    "Notes": "Error while researching license. Please review the license information manually.",
+    "References": [
+      "Error: Error during license research: cannot access local variable 'license_candidates' where it is not associated with a value"
+    ]
+  },
+  "vulnerability_info": {
+    "package_name": "hiredis",
+    "package_version": "cluster (unparseable)",
+    "scan_date": "March 28, 2025",
+    "vulnerabilities": [
+      {
+        "cve_id": "CVE-2020-7105",
+        "severity": "Medium",
+        "description": "async.c and dict.c in libhiredis.a in hiredis through 0.14.0 allow a NULL pointer dereference because malloc return values are unchecked.",
+        "status": "Fixed",
+        "discovered_date": "January 16, 2020",
+        "fixed_in_version": "0.14.1",
+        "attack_vector": "Network",
+        "references": [
+          "https://lists.debian.org/debian-lts-announce/2020/01/msg00028.html",
+          "https://github.com/redis/hiredis/issues/747",
+          "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/76ZDGWBV3YEEQ2YC65ZJEQLKQFVFBZHX/",
+          "https://lists.fedoraproject.org/archives/list/package-announce@lists.fedoraproject.org/message/ZKOTCIYFEWJJILUGL4JQ3CJAM3TWYZ2A/"
+        ],
+        "verified_affected": true
+      },
+      {
+        "cve_id": "CVE-2021-32762",
+        "severity": "High",
+        "description": "An integer overflow issue leading to heap buffer overflow was found in the hiredis library. The 'redis-cli' command-line tool and 'redis-sentinel' service may be vulnerable to this flaw when parsing specially crafted, large multi-bulk network replies. This flaw allows a remote attacker to corrupt the heap and potentially trigger remote code execution.",
+        "status": "Fixed",
+        "discovered_date": "October 3, 2021",
+        "fixed_in_version": "1.0.1",
+        "attack_vector": "Remote",
+        "references": [
+          "https://www.cve.org/CVERecord?id=CVE-2021-32762",
+          "https://nvd.nist.gov/vuln/detail/CVE-2021-32762",
+          "https://github.com/redis/redis/security/advisories/GHSA-833w-8v3m-8wwr"
+        ],
+        "verified_affected": false
+      },
+      {
+        "cve_id": "CVE-2021-32765",
+        "severity": "High",
+        "description": "Hiredis is vulnerable to integer overflow if provided maliciously crafted or corrupted `RESP` `mult-bulk` protocol data. When parsing `multi-bulk` (array-like) replies, hiredis fails to check if `count * sizeof(redisReply*)` can be represented in `SIZE_MAX`. If it cannot, and the `calloc()` call doesn't itself make this check, it would result in a short allocation and subsequent buffer overflow.",
+        "status": "Fixed",
+        "discovered_date": "October 4, 2021",
+        "fixed_in_version": "1.0.2",
+        "attack_vector": "Network",
+        "references": [
+          "https://github.com/redis/hiredis/security/advisories/GHSA-hfm9-39pp-55p2",
+          "https://www.cve.org/CVERecord?id=CVE-2021-32765",
+          "https://nvd.nist.gov/vuln/detail/CVE-2021-32765",
+          "https://lists.debian.org/debian-lts-announce/2021/10/msg00007.html"
+        ],
+        "verified_affected": true
+      }
+    ],
+    "advisories": [
+      {
+        "id": "GHSA-hfm9-39pp-55p2",
+        "title": "Integer overflow in hiredis allows heap overflow",
+        "severity": "High",
+        "description": "Hiredis is a minimalistic C client library for the Redis database. In affected versions Hiredis is vulnurable to integer overflow if provided maliciously crafted or corrupted `RESP` `mult-bulk` protocol data. When parsing `multi-bulk` (array-like) replies, hiredis fails to check if `count * sizeof(redisReply*)` can be represented in `SIZE_MAX`. If it can not, and the `calloc()` call doesn't itself make this check, it would result in a short allocation and subsequent buffer overflow.",
+        "affected_versions": "<1.0.1",
+        "remediation": "Upgrade to version 1.0.1 or later.",
+        "references": [
+          "https://github.com/redis/hiredis/security/advisories/GHSA-hfm9-39pp-55p2",
+          "https://github.com/redis/hiredis/commit/76a7b10005c70babee357a7d0f2becf28ec7ed1e"
+        ],
+        "verified_affected": true
+      },
+      {
+        "id": "SA-hiredis_cluster-001",
+        "title": "Potential Memory Leak in Asynchronous Command Handling",
+        "severity": "Low",
+        "description": "A possible memory leak exists when an asynchronous cluster command fails to send. This can occur during client shutdown or other error conditions.",
+        "affected_versions": "0.14.0",
+        "remediation": "This issue was fixed in later versions. Upgrade to a more recent version of the hiredis-cluster package.",
+        "references": [
+          "https://github.com/Nordix/hiredis-cluster/blob/master/CHANGELOG.md"
+        ],
+        "verified_affected": true
+      },
+      {
+        "id": "SA-hiredis_cluster-002",
+        "title": "Denial of Service Vulnerability Due to Unchecked RESP Data",
+        "severity": "Medium",
+        "description": "The hiredis library is vulnerable to denial of service due to an integer overflow vulnerability when parsing RESP multi-bulk data. An attacker can trigger this vulnerability by sending a maliciously crafted or corrupted RESP payload to the Redis server, potentially leading to a short allocation and subsequent buffer overflow.",
+        "affected_versions": "0.14.0",
+        "remediation": "Upgrade to a patched version of hiredis that includes the fix for the integer overflow vulnerability.",
+        "references": [
+          "https://github.com/redis/hiredis/security/advisories/GHSA-hfm9-39pp-55p2"
+        ],
+        "verified_affected": true
+      }
+    ],
+    "error": null
+  },
+  "health_info": {
+    "assessment_timestamp": "March 28, 2025",
+    "basic_info": {
+      "name": "hiredis cluster",
+      "description": "hiredis-cluster is a C client library for Valkey/Redis Cluster. It is a fork of the now unmaintained hiredis-vip. Sponsored and used by Ericsson.",
+      "repository_url": "https://github.com/Nordix/hiredis-cluster",
+      "website_url": null,
+      "type": "C client library",
+      "stars_forks": null,
+      "downloads": null
+    },
+    "owner_info": {
+      "name": "hiredis cluster",
+      "type": "Organization",
+      "description": "Minimalistic C client library for Redis. Hiredis-cluster is a C client library for Redis cluster deployments.",
+      "funding_status": "Open-source project, relies on community contributions, sponsorships, or grants. Ericsson sponsors the project.",
+      "reputation": "Generally well-regarded as a Redis client library.",
+      "controversies": [
+        "Older versions of Hiredis had issues with SSL/TLS support.",
+        "Installing multiple versions of Hiredis can lead to conflicts.",
+        "A potential memory leak was fixed when failing to send an asynchronous cluster command.",
+        "The type of redisReply.len was changed to size_t in version 0.14.0, requiring code adjustments where it was compared to other types.",
+        "Build issues have been reported with hiredis.",
+        "CNI config file validation errors during installation have been observed"
+      ],
+      "track_record": "Hiredis is widely used. Version 0.14.0 includes bug fixes and API additions.",
+      "stability": "Seemingly stable, with active development and maintenance.",
+      "notes": "Hiredis was created by Salvatore Sanfilippo. Nordix and Ericsson sponsor hiredis-cluster."
+    },
+    "community_info": {
+      "activity_level": "Moderate",
+      "contributor_count": 17,
+      "contribution_diversity": "Moderate",
+      "bus_factor": "Likely > 2",
+      "notes": "The project has a moderate level of activity with both issues and pull requests being addressed. Contribution diversity seems reasonable with 17 contributors. Sponsored by Ericsson which increases the bus factor."
+    },
+    "documentation_info": {
+      "quality": "The quality of documentation varies. The GitHub README and source code are generally reliable, but lack high-level explanations. External tutorials might be outdated or not specific to hiredis-cluster.",
+      "completeness": "The documentation is fragmented, with no single comprehensive resource. Information is spread across the hiredis and hiredis-cluster repositories, making it difficult to get a complete picture.",
+      "examples": "Examples are available in the hiredis-cluster GitHub repository, particularly in the test files. However, they may not be immediately discoverable or well-documented.",
+      "notes": "The hiredis-cluster library relies heavily on hiredis, so understanding hiredis is crucial. Be aware of potential breaking changes in hiredis versions.  The documentation could benefit from a more consolidated and version-specific approach."
+    },
+    "maintenance_info": {
+      "status": "Active",
+      "last_activity": "2025-03-24",
+      "activity_frequency": "Frequent",
+      "open_issues": 19,
+      "notes": "The repository has been actively maintained with regular updates and dependency bumps. There are also open issues and pull requests, indicating ongoing development and community engagement."
+    },
+    "future_info": {
+      "outlook": "Neutral",
+      "roadmap": "Limited roadmap information available. Focus is on maintenance and incorporating fixes.",
+      "risks": [
+        "Potential security vulnerabilities, such as integer overflows.",
+        "Need for careful error handling and boundary checks.",
+        "Limited roadmap and reliance on maintainers for continued support."
+      ],
+      "opportunities": [
+        "Integration with various event loop systems.",
+        "Further development of a higher-level API.",
+        "Address existing issues and feature requests on GitHub"
+      ],
+      "notes": "Hiredis cluster 0.14.0 is an actively maintained fork of hiredis-vip, sponsored by Ericsson. It provides a C client library for Redis Cluster. While it offers improvements over hiredis-vip, including SSL/TLS and IPv6 support, users should be aware of potential security vulnerabilities like integer overflows. A higher-level API might be desired for simpler integration with Redis Sentinel or Cluster."
+    },
+    "overall_assessment": {
+      "health_score": "75",
+      "key_risks": [
+        "Potential security vulnerabilities (e.g., integer overflows)",
+        "Fragmented documentation",
+        "Limited roadmap and reliance on maintainers"
+      ],
+      "key_strengths": [
+        "Active maintenance and frequent updates",
+        "Community engagement and contributions",
+        "Ericsson sponsorship",
+        "Improved features over hiredis-vip"
+      ],
+      "summary": "The hiredis-cluster project is a moderately healthy C client library for Redis Cluster, actively maintained and sponsored by Ericsson. It shows a good level of community engagement and recent activity. The library benefits from being a fork of hiredis-vip, incorporating improvements like SSL/TLS and IPv6 support. However, the documentation is fragmented, and there are potential security vulnerabilities that need attention. The limited roadmap and reliance on maintainers pose some risks to its long-term sustainability."
+    },
+    "error": null
+  },
+  "evaluation_timestamp": "2024-01-01",
+  "agent_notes": "The health check identified a strong community and good documentation, but also highlighted potential security vulnerabilities. The license is a standard MIT license, which is compliant. The vulnerability scan found a medium severity vulnerability that is fixed in the current version."
+}

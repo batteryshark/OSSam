@@ -1,0 +1,176 @@
+{
+  "guidance": "Generally Safe",
+  "explanation": "Based on the available information, the package appears to be generally safe for use, but requires standard precautions.",
+  "package_info": {
+    "Name": "libsrtp",
+    "Latest_Package_Version": "2.7.0",
+    "Requested_Package_Version": "2.6.0",
+    "Primary_Language": "C",
+    "License_Type": "BSD-3-Clause",
+    "Description": "An implementation of the Secure Real-time Transport Protocol (SRTP), the Universal Security Transform (UST), and a supporting cryptographic kernel.",
+    "Link_to_Source_Code": "https://github.com/cisco/libsrtp",
+    "Package_Owner": "Cisco Systems, Inc.",
+    "References": [
+      "https://release-monitoring.org/project/libsrtp",
+      "https://packages.fedoraproject.org/pkgs/libsrtp/libsrtp/",
+      "https://layers.openembedded.org/layerindex/recipe/400874/",
+      "https://developer.cisco.com/codeexchange/github/repo/cisco/libsrtp/",
+      "https://srtp.sourceforge.net/historical/libsrtp.pdf",
+      "https://github.com/cisco/libsrtp"
+    ],
+    "Documentation_URL": "https://github.com/cisco/libsrtp"
+  },
+  "license_info": {
+    "Name": "BSD-3-Clause",
+    "Status": "Allowed",
+    "Notes": "The 3-Clause BSD License is permissive and allows for nearly unlimited freedom with the software as long as BSD copyright and license notice is included.",
+    "References": [
+      "Direct match to license name: BSD-3-Clause"
+    ],
+    "Normalization": "Direct match to known license name in database",
+    "Agent_Notes": "License candidates: BSD-3-Clause; Matched to license in database: BSD-3-Clause"
+  },
+  "vulnerability_info": {
+    "package_name": "libsrtp",
+    "package_version": "v2.6.0",
+    "scan_date": "March 27, 2025",
+    "vulnerabilities": [],
+    "advisories": [
+      {
+        "id": "GHSA-wx5m-cj97-4wwg",
+        "title": "Potential media transport downgrade from the secure version (SRTP) to the non-secure one (RTP)",
+        "severity": "Critical",
+        "description": "Potential media transport downgrade from the secure version (SRTP) to the non-secure one (RTP).",
+        "affected_versions": "from 2.11 until 2.12.1",
+        "remediation": "2.13 or later",
+        "references": [
+          "https://github.com/pjsip/pjproject/security/advisories/GHSA-wx5m-cj97-4wwg"
+        ],
+        "verified_affected": false
+      },
+      {
+        "id": "Configuration: SRTP without TLS/ZRTP",
+        "title": "Plaintext Key Transmission Vulnerability",
+        "severity": "High",
+        "description": "When SRTP is used without TLS or ZRTP, the secret encryption keys are transmitted in plaintext within SIP messages. A malicious individual can intercept these keys and decode the SRTP data, compromising the confidentiality of the communication. Specifically, keys for the calling party can be found in the SIP INVITE message, and keys for the called party can be found in the SIP 200 OK message.",
+        "affected_versions": "All versions when SRTP is used without TLS or ZRTP",
+        "remediation": "Always use SRTP in conjunction with TLS or ZRTP to protect the confidentiality of key exchange. Ensure that signaling data is protected to prevent plaintext transmission of keys.",
+        "references": [
+          "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AQXblrxvFTxMvg8lmMVtWqGSb9qmusYYLEWr7cM0yG-B4QgzD6ZXdPVoFXW3G0XHyfKL4ja0AGLF07Eii3bu4bfc8ftDFsvpkxdk1IyEMoAzMMLrrN47w8Ge9rA5dYa8IGbT"
+        ],
+        "verified_affected": true
+      },
+      {
+        "id": "Best Practice: Regular Updates",
+        "title": "Importance of Regular Updates and Patching",
+        "severity": "Medium",
+        "description": "Failing to keep libsrtp and related systems updated with the latest security patches introduces vulnerabilities that attackers can exploit. Regular updates address known issues and provide protection against emerging threats.",
+        "affected_versions": "All versions",
+        "remediation": "Establish a routine for regularly updating libsrtp and all dependent software. Monitor security advisories and apply patches promptly.",
+        "references": [
+          "https://www.tenable.com/security/research/alerts/RHSA-2020:3873",
+          "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AQXblrwQ1RKiONhtHA3nqyPZo0IaAVDW_PPMbGQrS5AGGxkGgaTK04rI5I7ZUtD682y7tjh3PGl-hHpcq4Fr9uXWYDxUvriENxi7IBscvQXSZk3HMZPUl5bLOwR10AM8qDa9vz2tbf1udCoYv1PewntZPCx2gSVoa9qC0Keo2P74F5pH8x-t8uEOjCHTb19_oEjLu3bQ4HKWqpPnoYVnYtvL4I2wMJ1z5_c12Q2H3JnJe-8="
+        ],
+        "verified_affected": true
+      },
+      {
+        "id": "Misconfiguration: Cloud VoIP",
+        "title": "Cloud VoIP Misconfiguration Risks",
+        "severity": "Medium",
+        "description": "As businesses shift their VoIP systems to the cloud, misconfigurations can leave VoIP systems vulnerable to unauthorized access and data breaches. Incorrectly configured access controls and network settings can create weaknesses that hackers might exploit to intercept or disrupt communications.",
+        "affected_versions": "All versions used in cloud environments",
+        "remediation": "Ensure proper configuration of cloud-based VoIP systems, including access controls and network settings. Regularly review and audit configurations to prevent vulnerabilities.",
+        "references": [
+          "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AQXblrwPoBjpC1mf-qchy3QPJFClmMl6oCZuC238GfR2BnTVswy5GTFdoWFUsMxlKAsR5JsTVWF-CXDnnVV6qA4l60fGK_rhl1WlPHO9hEWflVJUW3eblS0xr_Tyba3bGrJqqzMT5ZuASW2gt0Y7WbhzhsWnHeIAPg6vGBB3t-WF"
+        ],
+        "verified_affected": true
+      }
+    ],
+    "error": null
+  },
+  "health_info": {
+    "assessment_timestamp": "March 27, 2025",
+    "basic_info": {
+      "name": "libsrtp",
+      "description": "libsrtp is a library that provides a Secure Real-time Transport Protocol (SRTP) implementation.",
+      "repository_url": "https://github.com/cisco/libsrtp",
+      "website_url": "https://github.com/cisco/libsrtp",
+      "type": "library",
+      "stars_forks": "Stars: 1.3k, Forks: 481 (as of Feb 24, 2024)",
+      "downloads": null
+    },
+    "owner_info": {
+      "name": "libsrtp",
+      "type": "organization",
+      "description": "An open-source library that provides an implementation of the Secure Real-time Transport Protocol (SRTP).",
+      "funding_status": "Not applicable, as it is an open-source library maintained by Cisco Systems, Inc.",
+      "reputation": "Generally positive, as it is a widely used open-source library for secure real-time communication.",
+      "controversies": [
+        "CVE-2015-6360: a DoS vulnerability in libSRTP due to improper input validation of SRTP packets"
+      ],
+      "track_record": "Good, with a history of providing a secure implementation of SRTP.",
+      "stability": "Likely stable, given that it is actively maintained and has a history of releases and updates.",
+      "notes": "It's crucial to stay informed about potential security vulnerabilities, be mindful of compatibility issues when integrating with other software, and keep the library updated to benefit from the latest fixes and improvements."
+    },
+    "community_info": {
+      "activity_level": "Moderate",
+      "contributor_count": 81,
+      "contribution_diversity": "Good",
+      "bus_factor": "Moderate",
+      "notes": "The project has a moderate level of activity with ongoing issues and pull requests. There's a good number of contributors, but the bus factor might be a concern. The community is engaged through mailing lists and GitHub, with discussions on various aspects of the library."
+    },
+    "documentation_info": {
+      "quality": "The quality is good but requires effort to access. The srtp.h file is well-documented, but a readily available complete API reference is lacking. ",
+      "completeness": "The documentation is not comprehensive, relying heavily on the source code and requiring Doxygen for full API documentation.",
+      "examples": "Examples are limited and primarily found within the README file and in related projects like pylibsrtp.",
+      "notes": "The official documentation is primarily within the source code, specifically the srtp.h header file. Generating complete documentation requires Doxygen. Community resources and guides are helpful but not specific to version 2.6.0."
+    },
+    "maintenance_info": {
+      "status": "Active",
+      "last_activity": "2025-03-10",
+      "activity_frequency": "High",
+      "open_issues": 25,
+      "notes": "Active development with frequent commits, pull requests, and issue discussions. Version 1.6 is effectively frozen, with only major security fixes or bugs going in. The active development branch is master."
+    },
+    "future_info": {
+      "outlook": "Positive",
+      "roadmap": "Active development with ongoing releases and a future v3 in the works.",
+      "risks": [
+        "Potential API changes may cause compatibility issues.",
+        "Dependency management can be challenging.",
+        "Vulnerabilities may be discovered and need to be addressed."
+      ],
+      "opportunities": [
+        "Further optimization for different architectures.",
+        "Integration with more build systems.",
+        "Address reported issues and potential vulnerabilities promptly.",
+        "Expand documentation and examples for easier adoption.",
+        "Collaborate with other projects to improve SRTP support and interoperability.",
+        "Explore new features and extensions to SRTP protocol.",
+        "Address reported issues like \"Failed to unprotect SRTP packet, err=9\""
+      ],
+      "notes": "Libsrtp is actively maintained by Cisco. Version 2.6.0 focuses on build improvements and optimization. Community support is available through mailing lists and GitHub."
+    },
+    "overall_assessment": {
+      "health_score": "85",
+      "key_risks": [
+        "Potential API changes may cause compatibility issues.",
+        "Dependency management can be challenging.",
+        "Vulnerabilities may be discovered and need to be addressed.",
+        "Bus factor might be a concern.",
+        "Lack of readily available complete API reference.",
+        "CVE-2015-6360: a DoS vulnerability in libSRTP due to improper input validation of SRTP packets"
+      ],
+      "key_strengths": [
+        "Actively maintained by Cisco.",
+        "Good number of contributors.",
+        "Focus on security.",
+        "Active development with ongoing releases.",
+        "Community support is available."
+      ],
+      "summary": "Libsrtp is a well-maintained library for Secure Real-time Transport Protocol (SRTP) implementation. It has a positive reputation and a history of providing secure communication. The project is actively developed by Cisco, with frequent updates and community support. Documentation quality is good but requires some effort to access. The future outlook is positive with ongoing releases and a future v3 in the works. Key risks include potential API changes and dependency management. Key strengths include active maintenance, a good number of contributors, and a focus on security."
+    },
+    "error": null
+  },
+  "evaluation_timestamp": "2024-01-01"
+}

@@ -1,0 +1,184 @@
+{
+  "guidance": "Use with Caution",
+  "explanation": "Based on the available information, the package appears to be generally safe for use, but requires specific attention to the identified vulnerabilities. Ensure the package is updated to the latest version and monitor for new advisories.",
+  "package_info": {
+    "Name": "Kamailio",
+    "Latest_Package_Version": "6.0.1",
+    "Requested_Package_Version": "6.0",
+    "Primary_Language": "C",
+    "License_Type": "GPLv2 or later",
+    "Description": "Kamailio is an open-source SIP server for building large VoIP and real-time communication platforms. It can be used to build platforms for VoIP, presence, WebRTC, and instant messaging. It can also be used for scaling up SIP-to-PSTN gateways, PBX systems, or media servers.",
+    "Link_to_Source_Code": "https://github.com/kamailio/kamailio",
+    "Package_Owner": "Kamailio community",
+    "References": [
+      "https://www.kamailio.org/",
+      "https://github.com/kamailio/kamailio",
+      "https://www.kamailio.org/w/documentation/",
+      "https://www.kamailio.org/docs/modules/stable/",
+      "https://www.kamailio.org/wikidocs/",
+      "https://www.kamailio.org/pub/kamailio/"
+    ],
+    "Documentation_URL": "https://www.kamailio.org/w/documentation/"
+  },
+  "license_info": {
+    "Name": "Unknown",
+    "Status": "Requires Legal Approval",
+    "Notes": "Error while researching license. Please review the license information manually.",
+    "References": [
+      "Error: Error during license research: cannot access local variable 'license_candidates' where it is not associated with a value"
+    ]
+  },
+  "vulnerability_info": {
+    "package_name": "Kamallio",
+    "package_version": "6.0",
+    "scan_date": "March 28, 2025",
+    "vulnerabilities": [],
+    "advisories": [
+      {
+        "id": "ES2018-05",
+        "title": "Off-by-One Heap Overflow in REGISTER message processing",
+        "severity": "High",
+        "description": "A specially crafted REGISTER message with a malformed `branch` or `From tag` triggers an off-by-one heap overflow. Abuse of this vulnerability leads to denial of service in Kamailio. Further research may show that exploitation leads to remote code execution.",
+        "affected_versions": "5.1.1, 5.1.0, 5.0.0",
+        "remediation": "Apply the patch or update to a release that includes the patch (e.g. v5.1.2, v5.0.6 or v4.4.7).",
+        "references": [
+          "https://github.com/EnableSecurity/advisories/tree/master/ES2018-05-kamailio-heap-overflow",
+          "https://www.exploit-db.com/exploits/44316"
+        ],
+        "verified_affected": false
+      },
+      {
+        "id": "SA-Kamallio-ExecModule-001",
+        "title": "Remote Code Execution via Kamailio's exec module",
+        "severity": "Critical",
+        "description": "The combination of pseudo-variables and Kamailio's `exec` module can be risky and may result in code injection. By using special SIP headers and environment variables, it becomes effortless to exploit a vulnerable configuration. A remote attacker may trigger this vulnerability by simply sending a malicious SIP message.",
+        "affected_versions": "All versions using the exec module with user-controlled pseudo-variables",
+        "remediation": "Avoid the `exec` module altogether or use strict input validation on user-controlled values. Review Kamailio configuration files and determine if and how functions from the `exec` module are used.",
+        "references": [
+          "https://www.enablesecurity.com/blog/kamailio-exec-module-considered-harmful.html",
+          "https://github.com/EnableSecurity/kamailio-exec-module-examples"
+        ],
+        "verified_affected": true
+      },
+      {
+        "id": "BestPractice-Misconfig-001",
+        "title": "Insecure Configuration: Default Passwords and Open Ports",
+        "severity": "Medium",
+        "description": "Using default passwords and leaving unnecessary ports open can lead to security breaches. Attackers can exploit these vulnerabilities to gain unauthorized access.",
+        "affected_versions": "All versions with default configurations",
+        "remediation": "Change default passwords for all Kamailio accounts. Limit accessibility to the Kamailio server to only those who require admin access. Close all unnecessary ports.",
+        "references": [
+          "https://www.magictechnolabs.com/blog/best-practices-for-kamailio-security/"
+        ],
+        "verified_affected": true
+      },
+      {
+        "id": "BestPractice-Security-002",
+        "title": "Importance of regular updates and monitoring",
+        "severity": "Medium",
+        "description": "Failing to update Kamailio can leave you vulnerable to exploits. In addition, ignoring Kamailio server activity could give malicious users access. ",
+        "affected_versions": "All versions",
+        "remediation": "Always update your software used for running Kamailio. Pay attention to the activity of your Kamailio server, looking for strange traffic patterns or unauthorized access attempts.",
+        "references": [
+          "https://www.magictechnolabs.com/blog/best-practices-for-kamailio-security/"
+        ],
+        "verified_affected": true
+      },
+      {
+        "id": "Topology-hiding",
+        "title": "Security by Obscurity and Topology Hiding",
+        "severity": "Low",
+        "description": "Obscuring network insecurities can deter malicious actors. The `topoh` module helps hide details, such as PSTN gateway addresses and internal network topology, protecting against attacks aimed at exploiting this information.",
+        "affected_versions": "All Versions",
+        "remediation": "Utilize the `topoh` module to protect addresses of PSTN gateways and hide internal network topology.",
+        "references": [
+          "https://www.kamailio.org/w/tutorials:security:kamailio-security"
+        ],
+        "verified_affected": true
+      }
+    ],
+    "error": null
+  },
+  "health_info": {
+    "assessment_timestamp": "March 28, 2025",
+    "basic_info": {
+      "name": "Kamailio 6.0",
+      "description": "Kamailio is a high-performance SIP server with a flexible architecture, suitable for various scenarios, including small-office use, enterprise PBX replacements, and carrier services. It supports UDP, TCP, TLS, and SCTP transport layers, DNSsec, ENUM, AAA via database, RADIUS, DIAMETER, gateways to SMS and XMPP, least cost routing, load balancing, NAT traversal, and call processing language.",
+      "repository_url": "https://github.com/kamailio/kamailio",
+      "website_url": "https://www.kamailio.org/",
+      "type": "SIP Server",
+      "stars_forks": "308 contributors, plus an additional 294. During the v6.0.0 development cycle, there were approximately 1800 commits made by more than 40 contributors. As of March 2025, the project has almost 39000 commits to the master branch.",
+      "downloads": "Source tarball available at https://www.kamailio.org/pub/kamailio/latest-6.0.x/src/. Binary packages for various distributions are available."
+    },
+    "owner_info": {
+      "name": "Kamailio",
+      "type": "organization",
+      "description": "Kamailio is an open-source SIP server project with a history that began in 2001 as SIP Express Router (SER). It is developed and managed by a worldwide community.",
+      "funding_status": "Community-supported open source project",
+      "reputation": "Generally positive, known as a stable and flexible open-source SIP server.",
+      "controversies": [
+        "Migration issues & package dependencies",
+        "Security concerns related to configuration",
+        "Bugs and issues reported on GitHub",
+        "Configuration and usage challenges (NAT, high CPU usage)"
+      ],
+      "track_record": "Long track record with a history that began in 2001. Kamailio v6.0.0 was released on January 29, 2025, including key updates and new modules.",
+      "stability": "Stable, with a long history of development and a large community.",
+      "notes": "Kamailio relies on community contributions and doesn't have a traditional funding structure. The project organizes its own conference, Kamailio World."
+    },
+    "community_info": {
+      "activity_level": "Moderate",
+      "contributor_count": 308,
+      "contribution_diversity": "Good",
+      "bus_factor": "Medium",
+      "notes": "The project has a moderate level of activity with a good number of contributors. The bus factor is estimated to be medium, as the project has a core group of maintainers, but contributions are welcome from the wider community. Community feedback can be found in mailing lists, Matrix channel and other community forums."
+    },
+    "documentation_info": {
+      "quality": "Good",
+      "completeness": "Good",
+      "examples": "Sufficient",
+      "notes": "Overall, the documentation for Kamailio 6.0 is well-structured and provides a good starting point for new users. The official website, wiki, and GitHub repositories offer a wealth of information. The documentation could benefit from more comprehensive examples and use cases."
+    },
+    "maintenance_info": {
+      "status": "Active",
+      "last_activity": "2025-03-27",
+      "activity_frequency": "High",
+      "open_issues": 27,
+      "notes": "Active development with frequent commits, multiple releases in March 2025. Several open issues need attention."
+    },
+    "future_info": {
+      "outlook": "Positive",
+      "roadmap": "The roadmap includes ongoing updates, conference events, and simplification efforts.",
+      "risks": [
+        "Complexity may deter some users.",
+        "Dependency issues can hinder migration.",
+        "Security vulnerabilities require constant vigilance.",
+        "Competition from other SIP servers and SBCs"
+      ],
+      "opportunities": [
+        "Further simplification of configuration.",
+        "Improved integration with other systems.",
+        "Expansion of cloud deployment capabilities.",
+        "Address known bugs and security concerns proactively"
+      ],
+      "notes": "Kamailio 6.0 is a robust open-source SIP server with a strong community and ongoing development. While some complexity and potential issues exist, its flexibility and features make it a valuable tool for VoIP and real-time communication platforms."
+    },
+    "overall_assessment": {
+      "health_score": "78",
+      "key_risks": [
+        "Complexity may deter some users.",
+        "Dependency issues can hinder migration.",
+        "Security vulnerabilities require constant vigilance.",
+        "Bugs and issues reported on GitHub"
+      ],
+      "key_strengths": [
+        "Long track record with a history that began in 2001",
+        "Stable, with a long history of development and a large community.",
+        "Good documentation quality and completeness."
+      ],
+      "summary": "Kamailio 6.0 is a robust and flexible open-source SIP server suitable for various scenarios, from small offices to carrier services. It benefits from a long history, active development, and a supportive community. The project maintains a good level of documentation. However, complexities in configuration, potential security vulnerabilities, and dependency issues pose challenges."
+    },
+    "error": null
+  },
+  "evaluation_timestamp": "2024-01-01"
+}

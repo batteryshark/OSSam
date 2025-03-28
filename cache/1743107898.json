@@ -1,0 +1,212 @@
+{
+  "guidance": "Use with Caution",
+  "explanation": "Based on the available information, the package demonstrates a mix of positive and concerning attributes. While the license is compliant and the package offers valuable functionality, potential vulnerabilities and health issues necessitate a cautious approach.",
+  "package_info": {
+    "Name": "Ollama",
+    "Latest_Package_Version": "v0.6.3",
+    "Requested_Package_Version": "v0.6.2",
+    "Primary_Language": "Go",
+    "License_Type": "MIT License",
+    "Description": "Ollama is a lightweight, extensible framework for building and running large language models on your local machine. It provides a simple API for creating, running, and managing models.",
+    "Link_to_Source_Code": "https://github.com/ollama/ollama",
+    "Package_Owner": "Ollama Inc.",
+    "References": [
+      "https://github.com/ollama/ollama",
+      "https://github.com/ollama/LICENSE",
+      "https://ollama.com/docs",
+      "https://github.com/ollama/ollama/releases"
+    ],
+    "Documentation_URL": "https://ollama.com/docs"
+  },
+  "license_info": {
+    "Name": "MIT",
+    "Status": "Allowed",
+    "Notes": "The MIT License is permissive and business-friendly. It allows for commercial use, modification, distribution, and private use, with minimal restrictions.",
+    "References": [
+      "Matched license variant: mit license \u2192 MIT"
+    ],
+    "Normalization": "Normalized from variant 'mit license' to canonical name 'MIT'",
+    "Agent_Notes": "License candidates: MIT; Matched to license in database: MIT"
+  },
+  "vulnerability_info": {
+    "package_name": "ollama",
+    "package_version": "v0.6.2",
+    "scan_date": "March 27, 2025",
+    "vulnerabilities": [
+      {
+        "cve_id": "CVE-2024-39719",
+        "severity": "Medium",
+        "description": "Ollama exposes which files exist on the server on which it is deployed. When calling the CreateModel route with a path parameter that does not exist, Ollama reflects the \u201cFile does not exist\u201d error to the attacker, providing a primitive for file existence on the server.",
+        "status": "Not fixed as of v0.3.14",
+        "discovered_date": "October 30, 2024",
+        "fixed_in_version": "N/A",
+        "attack_vector": "Remote",
+        "references": [
+          "https://www.oligo.security/blog/more-models-more-probllms",
+          "https://www.tenable.com/plugins/index.php?view=mobile&id=114575"
+        ],
+        "verified_affected": false
+      },
+      {
+        "cve_id": "CVE-2024-8062",
+        "severity": "High",
+        "description": "A divide by zero vulnerability exists in ollama/ollama version v0.3.3. The vulnerability occurs when importing GGUF models with a crafted type for `block_count` in the Modelfile. This can lead to a denial of service (DoS) condition when the server processes the model, causing it to crash.",
+        "status": "Unknown",
+        "discovered_date": "March 20, 2025",
+        "fixed_in_version": "Unknown",
+        "attack_vector": "Remote",
+        "references": [],
+        "verified_affected": false
+      },
+      {
+        "cve_id": "CVE-2024-12886",
+        "severity": "Medium",
+        "description": "An Out-Of-Memory (OOM) vulnerability exists in the ollama server version 0.3.14. This vulnerability can be triggered when a malicious API server responds with a gzip bomb HTTP response, leading to the ollama server crashing. The vulnerability is present in the makeRequestWithRetry and getAuthorizationToken functions, which use io. ReadAll to read the response body. This can result in excessive memory usage and a Denial of Service (DoS) condition.",
+        "status": "Unknown",
+        "discovered_date": "March 21, 2025",
+        "fixed_in_version": "Unknown",
+        "attack_vector": "Network",
+        "references": [],
+        "verified_affected": false
+      },
+      {
+        "cve_id": "CVE-2024-7773",
+        "severity": "Critical",
+        "description": "A vulnerability was found in ollama up to 0.3.x. It has been declared as critical. This vulnerability affects the function parseFromZipFile of the component ZIP File Handler. The manipulation with an unknown input leads to a path traversal vulnerability.",
+        "status": "Unknown",
+        "discovered_date": "March 20, 2025",
+        "fixed_in_version": "Unknown",
+        "attack_vector": "Remote",
+        "references": [],
+        "verified_affected": false
+      }
+    ],
+    "advisories": [
+      {
+        "id": "CNVD-2025-04094",
+        "title": "Ollama Unauthorized Access Vulnerability Due to Improper Configuration",
+        "severity": "Critical",
+        "description": "Ollama does not have authentication and access control functions by default. When a user opens the service (port 11434 by default) to the public network, an unauthenticated attacker can directly call its API interface to steal sensitive model assets, feed false information, tamper with system configuration, or abuse model reasoning resources.",
+        "affected_versions": "All versions if not configured with authentication and open to the public network.",
+        "remediation": "Implement authentication mechanisms (API keys, OAuth, or other) and configure firewall rules to restrict access to the Ollama service. Ensure the Ollama port (11434) is not exposed to the Internet.",
+        "references": [
+          "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AQXblrwrNXwPLQGUZI3Yye8rpVBySJS2Mo95vOk_g2jo5vvYubPTJD332DjpxE0RYQKW2oPu3tvozhPAphajBn-AKo3BM5poE0l8IKeZIEDaqZacyNzURZZezWs6DkL_cx4U2DV7Dzkxzpw1O0wrMHARZiP8Ag59dHR9cQn0x076QSLzkJb2wu7Vcfd6KWizJQTkxJvebqF9CyWyWIiZNSzJ-voFckIUK0M0"
+        ],
+        "verified_affected": true
+      },
+      {
+        "id": "UNASSIGNED",
+        "title": "Ollama Model Poisoning Vulnerability",
+        "severity": "High",
+        "description": "Model Poisoning via the /api/pull route from an untrusted source. A client can pull a model from an unverified (HTTP) source by using the /api/pull route if it lacks special authorization (vulnerable by default). An attacker can trigger the server to pull a model from the attacker-controlled server.",
+        "affected_versions": "All versions",
+        "remediation": "Filter which endpoints are exposed to the internet by means of a proxy or a web application firewall. Ensure that not all endpoints are exposed.",
+        "references": [
+          "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AQXblryYIqlz592C6Pqfy-VJkVNoSBSPUec7WLJX_4tYaGDVuQKPvSXq7QcF3TCtXR3wK3Nu1kjMhw0IgLugGQeTsSU2ltbtVPaBgof3jeU5icd1qNHjrHp9g-yrY5-WbHqKRbyAdLO_Tbp0jo1ocarQ4nh6zH4tMb1qrUvVCYLOdhh8S0feTSLJgTU="
+        ],
+        "verified_affected": true
+      },
+      {
+        "id": "MISCONFIGURATION",
+        "title": "Exposed Ollama Instance",
+        "severity": "Critical",
+        "description": "Exposing the Ollama API port (default 11434) to the internet without authentication allows unauthorized access, data exfiltration, and model manipulation. Six critical flaws were identified that could be exploited for denial-of-service attacks, model theft, and model poisoning.",
+        "affected_versions": "All versions",
+        "remediation": "Close port 11434, enable authentication, implement network segmentation, and apply the principle of least privilege. Regularly monitor access logs and conduct attack surface scans.",
+        "references": [
+          "https://vertexaisearch.cloud.google.com/grounding-api-redirect/AQXblrzL1NPRUG1MXXIVtl9JnQY9SQiSK4LU0ZrbrwbpBG810ct0FUjyZmkprM5RiN0CR-ja1Qak5mKPNdtkR1HuIk0FUk0OhXVcqL5vnLjdmzoSIS4-aphKH5XeQDwSn_Fe4FQoxmgy5x36cpAlK1IITq55eWN72dEM_z5OF5eEkTFTzUNjGJZ39ngcHkMW"
+        ],
+        "verified_affected": true
+      }
+    ],
+    "error": null,
+    "generated_at": "2025-03-27T16:25:51.212959"
+  },
+  "health_info": {
+    "assessment_timestamp": "March 27, 2025",
+    "basic_info": {
+      "name": "Ollama",
+      "description": "Ollama is a tool that allows you to run large language models locally.",
+      "repository_url": "https://github.com/ollama/ollama",
+      "website_url": "https://ollama.com/",
+      "type": "Large Language Model Tool",
+      "stars_forks": "Stars: 135k, Forks: 11.2k",
+      "downloads": null
+    },
+    "owner_info": {
+      "name": "Ollama Inc.",
+      "type": "company",
+      "description": "Ollama is a command-line tool for running large language models locally, developed by Ollama Inc. Founded by Jeffrey Morgan and Michael Chiang in 2023.",
+      "funding_status": "Raised $500K in total funding. Investors include Essence Venture Capital, Rogue Capital, Sunflower Capital, and Y Combinator.",
+      "reputation": "Generally positive, known for simplifying local LLM deployment.",
+      "controversies": [
+        "A security vulnerability (CNVD-2025-04094) exists in all Ollama versions where, if not properly configured with authentication and access control, the service (port 11434 by default) is exposed to the public network. This allows unauthenticated attackers to access the API, potentially stealing model assets, injecting false information, tampering with system configuration, or abusing model reasoning resources.",
+        "Some users have reported issues with memory consumption and AMD GPU support.",
+        "Some users have expressed disappointment with Ollama's ROCm support for AMD GPUs, citing issues with memory calculation, models failing to load, and general regressions in new versions. Some suggest vLLM or llama.cpp as alternatives"
+      ],
+      "track_record": "Track record of addressing issues and adding features. Version 0.6.2 fixed several bugs and improved performance.",
+      "stability": "Appears stable with consistent updates and bug fixes. They have funding from multiple investors.",
+      "notes": "Privately held company, venture capital-backed."
+    },
+    "community_info": {
+      "activity_level": "High",
+      "contributor_count": 459,
+      "contribution_diversity": "High",
+      "bus_factor": "Moderate",
+      "notes": "The community is very active with a lot of integrations and libraries. There are many contributors."
+    },
+    "documentation_info": {
+      "quality": "The documentation quality is generally good, with clear instructions and explanations. The official documentation is well-maintained, and community tutorials offer valuable insights. ",
+      "completeness": "The documentation appears fairly complete, covering installation, API usage, model management, and integration. There might be gaps in specific areas or advanced use cases.",
+      "examples": "There are examples available in the official documentation, API documentation, and community tutorials. They cover basic usage, Modelfile customization, and integration with other tools.",
+      "notes": "It's important to check the publication date of community resources and ensure the information is still current, as the project is actively developed. Consider expanding documentation for advanced use cases and troubleshooting."
+    },
+    "maintenance_info": {
+      "status": "Active",
+      "last_activity": "March 27, 2025",
+      "activity_frequency": "High",
+      "open_issues": 1500,
+      "notes": "The project is actively maintained with frequent commits, releases, and issue resolutions. The team is responsive and addresses bugs and feature requests promptly."
+    },
+    "future_info": {
+      "outlook": "Positive",
+      "roadmap": "The roadmap includes production readiness, model support, functionality, and platform expansion.",
+      "risks": [
+        "Potential performance and stability issues on some hardware.",
+        "Competition from other local LLM deployment solutions.",
+        "Reliance on community contributions for development and support."
+      ],
+      "opportunities": [
+        "Expanding hardware support for AMD GPUs.",
+        "Further optimizations for Gemma 3.",
+        "Developing an official UI for Ollama"
+      ],
+      "notes": "Ollama shows strong potential with its focus on local LLM deployment and ease of use. Continued improvements in model support, resource utilization, and community engagement will be key to its future success."
+    },
+    "overall_assessment": {
+      "health_score": "78",
+      "key_risks": [
+        "Security vulnerability (CNVD-2025-04094)",
+        "Potential performance and stability issues on some hardware",
+        "Competition from other local LLM deployment solutions",
+        "Reliance on community contributions for development and support"
+      ],
+      "key_strengths": [
+        "Active maintenance",
+        "Frequent commits, releases, and issue resolutions",
+        "Responsive team",
+        "Strong community"
+      ],
+      "summary": "Ollama is a tool that allows you to run large language models locally. It has a generally positive reputation, active development and a strong community. Key risks include a security vulnerability and potential performance issues on some hardware. Key strengths include active maintenance, frequent updates, and a responsive team."
+    },
+    "details": {
+      "maintenance": {},
+      "community": {},
+      "documentation": {},
+      "adoption": {},
+      "maturity": {},
+      "future": {}
+    }
+  },
+  "evaluation_timestamp": "2024-01-01T00:00:00Z"
+}

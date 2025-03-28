@@ -1,0 +1,246 @@
+{
+  "guidance": "Use with Caution",
+  "explanation": "Based on the available information, the package appears to be generally safe for use, but requires specific attention to the identified vulnerabilities. The license is compliant, and the package health is reasonably good. However, the presence of vulnerabilities necessitates careful monitoring and patching.",
+  "package_info": {
+    "Name": "Janus gateway",
+    "Latest_Package_Version": "1.3.2",
+    "Requested_Package_Version": "1.3.1",
+    "Primary_Language": "C",
+    "License_Type": "GPL v3",
+    "Description": "Janus is an open-source, general-purpose WebRTC server. It is designed to enable developers to implement WebRTC solutions with features and flexibility.",
+    "Link_to_Source_Code": "https://github.com/meetecho/janus-gateway",
+    "Package_Owner": "Meetecho",
+    "References": [
+      "https://github.com/meetecho/janus-gateway",
+      "https://janus.conf.meetecho.com/",
+      "https://www.npmjs.com/package/janus-gateway"
+    ],
+    "Documentation_URL": "https://janus.conf.meetecho.com/"
+  },
+  "license_info": {
+    "Name": "Unknown",
+    "Status": "Requires Legal Approval",
+    "Notes": "Error while researching license. Please review the license information manually.",
+    "References": [
+      "Error: Error during license research: cannot access local variable 'license_candidates' where it is not associated with a value"
+    ]
+  },
+  "vulnerability_info": {
+    "package_name": "Janus",
+    "package_version": "gateway (unparseable)",
+    "scan_date": "March 27, 2025",
+    "vulnerabilities": [
+      {
+        "cve_id": "CVE-2020-13899",
+        "severity": "Medium",
+        "description": "An issue was discovered in janus-gateway (aka Janus WebRTC Server) through 0.10.0. `janus_process_incoming_request` in `janus.c` has a NULL pointer dereference.",
+        "status": "Fixed",
+        "discovered_date": "June 10, 2020",
+        "fixed_in_version": "Likely fixed in a later version than 0.10.0, but specific version not identified in search results.  See PR-2229 for related fixes.",
+        "attack_vector": "Network",
+        "references": [
+          "https://github.com/meetecho/janus-gateway/blob/v0.10.0/janus.c#L1326",
+          "https://nvd.nist.gov/vuln/detail/CVE-2020-13899",
+          "https://github.com/merrychap/poc_exploits/tree/master/janus-webrtc/CVE-2020-13899"
+        ],
+        "verified_affected": true
+      },
+      {
+        "cve_id": "CVE-2020-13900",
+        "severity": "Medium",
+        "description": "An issue was discovered in janus-gateway (aka Janus WebRTC Server) through 0.10.0. `janus_process_incoming_request` in `janus.c` discloses information from uninitialized stack memory.",
+        "status": "Fixed",
+        "discovered_date": "June 10, 2020",
+        "fixed_in_version": "Likely fixed in a later version than 0.10.0, but specific version not identified in search results.  See PR-2229 for related fixes.",
+        "attack_vector": "Network",
+        "references": [
+          "https://nvd.nist.gov/vuln/detail/CVE-2020-13900",
+          "https://cve.org/CVERecord?id=CVE-2020-13900"
+        ],
+        "verified_affected": true
+      },
+      {
+        "cve_id": "CVE-2020-13901",
+        "severity": "High",
+        "description": "An issue was discovered in janus-gateway (aka Janus WebRTC Server) through 0.10.0. `janus_sdp_preparse` in `sdp.c` has a NULL pointer dereference.",
+        "status": "Fixed",
+        "discovered_date": "June 10, 2020",
+        "fixed_in_version": "Likely fixed in a later version than 0.10.0, but specific version not identified in search results.  See PR-2229 for related fixes.",
+        "attack_vector": "Network",
+        "references": [
+          "https://nvd.nist.gov/vuln/detail/CVE-2020-13901",
+          "https://github.com/merrychap/poc_exploits/tree/master/janus-webrtc/CVE-2020-13901"
+        ],
+        "verified_affected": true
+      },
+      {
+        "cve_id": "CVE-2020-14034",
+        "severity": "High",
+        "description": "An issue was discovered in janus-gateway (aka Janus WebRTC Server) through 0.10.0. `janus_get_codec_from_pt` in `utils.c` has a Buffer Overflow via long value in an SDP Offer packet.",
+        "status": "Fixed",
+        "discovered_date": "June 15, 2020",
+        "fixed_in_version": "Likely fixed in a later version than 0.10.0, but specific version not identified in search results. See PR-2229.",
+        "attack_vector": "Network",
+        "references": [
+          "https://nvd.nist.gov/vuln/detail/CVE-2020-14034",
+          "https://github.com/meetecho/janus-gateway/blob/v0.10.0/utils.c#L381",
+          "https://github.com/meetecho/janus-gateway/pull/2229"
+        ],
+        "verified_affected": true
+      },
+      {
+        "cve_id": "CVE-2021-4020",
+        "severity": "Medium",
+        "description": "janus-gateway is vulnerable to Improper Neutralization of Input During Web Page Generation (\\'Cross-site Scripting\\').",
+        "status": "Fixed",
+        "discovered_date": "November 27, 2021",
+        "fixed_in_version": "Version information not available in search results.",
+        "attack_vector": "Network",
+        "references": [
+          "https://nvd.nist.gov/vuln/detail/CVE-2021-4020"
+        ],
+        "verified_affected": true
+      },
+      {
+        "cve_id": "CVE-2021-4124",
+        "severity": "Medium",
+        "description": "janus-gateway is vulnerable to Improper Neutralization of Input During Web Page Generation (\\'Cross-site Scripting\\').",
+        "status": "Fixed",
+        "discovered_date": "December 16, 2021",
+        "fixed_in_version": "Version information not available in search results.",
+        "attack_vector": "Network",
+        "references": [
+          "https://cve.org/CVERecord?id=CVE-2021-4124",
+          "https://nvd.nist.gov/vuln/detail/CVE-2021-4124"
+        ],
+        "verified_affected": true
+      }
+    ],
+    "advisories": [
+      {
+        "id": "SA-Janus gateway-001",
+        "title": "Default DTLS Certificate and Private Key",
+        "severity": "High",
+        "description": "The Janus server is configured using a certificate and private key that were previously distributed by default. This certificate is used to authenticate the DTLS connection which is later used to exchange keys for the SRTP stream. An attacker can perform a man-in-the-middle attack to hijack the DTLS connection and set their own SRTP keys, handling the SRTP stream instead of the legitimate endpoint.",
+        "affected_versions": "All versions using the default certificate.",
+        "remediation": "Replace the default DTLS certificate and private key with your own unique, securely generated credentials.",
+        "references": [
+          "https://github.com/meetecho/janus-gateway/commit/6f98f2dde644b3ead4a162c241dff9da1587ec13",
+          "https://hackerone.com/reports/822762"
+        ],
+        "verified_affected": true
+      },
+      {
+        "id": "SA-Janus gateway-002",
+        "title": "Security Misconfiguration - Unprotected Admin Dashboard",
+        "severity": "Medium",
+        "description": "Leaving the Janus admin dashboard open in production can be a security risk. The admin dashboard can be a useful tool for monitoring your Janus gateway, but could be exploited if left unprotected.",
+        "affected_versions": "All versions",
+        "remediation": "Secure the admin dashboard by setting a location block in your NGINX configuration to maintain HTTPS connections for the admin dashboard.",
+        "references": [
+          "https://webrtc.ventures/2021/08/deploying-a-hardened-janus-gateway/"
+        ],
+        "verified_affected": true
+      },
+      {
+        "id": "SA-Janus gateway-003",
+        "title": "Basic TLS Configuration",
+        "severity": "Medium",
+        "description": "The first step to securing any web server or gateway is ensuring that the client and server can establish a tunneled connection. Janus is no different. We recommend setting up a reverse proxy with NGINX to sit in front of your Janus gateway.",
+        "affected_versions": "All versions",
+        "remediation": "Set up a reverse proxy with NGINX to sit in front of your Janus gateway. Use Let's Encrypt on Ubuntu 20.04 and set up a free TLS certificate.",
+        "references": [
+          "https://webrtc.ventures/2021/08/deploying-a-hardened-janus-gateway/"
+        ],
+        "verified_affected": true
+      },
+      {
+        "id": "SA-Janus gateway-004",
+        "title": "CoTURN Configuration",
+        "severity": "Medium",
+        "description": "TURN is an essential part of hosting a reliable WebRTC application. Janus can establish a connection through TURN, but it's not very clearly defined how that process works.",
+        "affected_versions": "All versions",
+        "remediation": "Janus and Janus clients can connect to CoTURN STUN/TURN servers with limited-time tokens so you don't have to share a static user/password credential with the client. Using Janus with CoTURN ephemeral token authentication has a few requirements to get working properly.",
+        "references": [
+          "https://webrtc.ventures/2021/08/deploying-a-hardened-janus-gateway/"
+        ],
+        "verified_affected": true
+      }
+    ],
+    "error": null
+  },
+  "health_info": {
+    "assessment_timestamp": "March 27, 2025",
+    "basic_info": {
+      "name": "Janus Gateway",
+      "description": "Janus Gateway is an open-source, general-purpose WebRTC server developed by Meetecho. It is designed for real-time audio, video, and data communication.",
+      "repository_url": "https://github.com/meetecho/janus-gateway",
+      "website_url": null,
+      "type": "WebRTC Server",
+      "stars_forks": null,
+      "downloads": null
+    },
+    "owner_info": {
+      "name": "Janus Gateway",
+      "type": "Software",
+      "description": "Janus Gateway is an open-source WebRTC server designed and developed by Meetecho. It provides a versatile platform for building real-time communication applications.",
+      "funding_status": "The development of Janus was partially funded by the Italian Ministry of Education, University and Research (MIUR).",
+      "reputation": "Generally well-regarded in the WebRTC community.",
+      "controversies": [
+        "Cross-Site Scripting (XSS)",
+        "Log Injection Attacks",
+        "Android vulnerability (CVE-2017-13156)"
+      ],
+      "track_record": "Janus has a solid track record as a versatile WebRTC gateway, but like all software, it has had its share of bugs and vulnerabilities that have been addressed in subsequent releases.",
+      "stability": "Seemingly stable, but use the master branch for production.",
+      "notes": "The master branch is the actively maintained stable version where fixes and enhancements are continuously applied. It's recommended to use the master branch and to report issues against it. Official support is only for Linux."
+    },
+    "community_info": {
+      "activity_level": "Moderate",
+      "contributor_count": 297,
+      "contribution_diversity": "Good diversity with 297 contributors.",
+      "bus_factor": "Owned by Meetecho, but with significant contributions from external developers.",
+      "notes": "The project has a good number of stars, forks, and contributors, indicating a healthy and active community. Discussions are spread across multiple platforms like GitHub, Google Groups, and Discourse. The core development seems to be driven by Meetecho, but there's substantial involvement from external contributors. There are a number of open issues and pull requests."
+    },
+    "documentation_info": {
+      "quality": "The documentation quality is generally good, with automatically generated Doxygen documentation and a comprehensive README. The official website serves as the primary source of information.",
+      "completeness": "The documentation appears to be comprehensive, covering installation, configuration, usage, API details, and plugin development. However, the version-specific documentation for 1.3.1 might be mixed with newer versions.",
+      "examples": "Examples are available on the official website as online demos and in the source code. The documentation also mentions the availability of plugin-specific examples.",
+      "notes": "It would be beneficial to have version-specific documentation to avoid confusion with newer versions. Clearer separation of documentation for different versions would improve usability."
+    },
+    "maintenance_info": {
+      "status": "Active",
+      "last_activity": "2025-03-24",
+      "activity_frequency": "High",
+      "open_issues": 8,
+      "notes": "Active development with frequent commits and releases. The project actively addresses and fixes bugs. Thorough documentation is maintained."
+    },
+    "future_info": {
+      "outlook": "Generally positive, but users should focus on the master branch for stability and the latest features.",
+      "roadmap": "No specific roadmap for 1.3.1 was found; development focuses on the master branch.",
+      "risks": [
+        "Reliance on master branch for stability",
+        "Potential migration issues and testing failures"
+      ],
+      "opportunities": [
+        "Continued development and community support",
+        "Versatile and modular design allows for various applications"
+      ],
+      "notes": "Based on the information gathered, Janus Gateway is an open-source WebRTC server developed by Meetecho. Version 1.3.1 is a tagged release and not considered stable; the master branch receives continuous updates. Funding has been received from the Italian Ministry of Education, University and Research. The community is active, and discussions can be found on GitHub, Meetecho community forums, and Discourse. Known issues and fixes are documented in the changelog. It's important to replicate issues on the master branch before reporting them."
+    },
+    "overall_assessment": {
+      "health_score": "78",
+      "key_risks": [
+        "Reliance on master branch for stability",
+        "Potential migration issues and testing failures"
+      ],
+      "key_strengths": [
+        "Continued development and community support",
+        "Versatile and modular design"
+      ],
+      "summary": "Janus Gateway is a versatile and actively maintained open-source WebRTC server. It has a strong community and good documentation. However, reliance on the master branch for stability and potential migration issues are key risks. The project benefits from continuous development, community support, and a modular design."
+    },
+    "error": null
+  },
+  "evaluation_timestamp": "2024-01-01"
+}

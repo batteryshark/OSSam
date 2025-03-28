@@ -1,3 +1,18 @@
+BSL:
+  Name: BSL
+  Status: Requires Legal Approval
+  Notes: The Business Source License (BSL) is a non-OSI-approved license used by companies like HashiCorp. It includes time-limited commercial restrictions that convert to an open source license (typically Apache 2.0) after the change date. Requires legal review for commercial use during the restricted period.
+
+SSPL:
+  Name: SSPL
+  Status: Requires Legal Approval
+  Notes: The Server Side Public License (SSPL) requires that anyone making the functionality of the software available to third parties as a service must also open source all programs used to make that service available. This is a strong copyleft license with network protections.
+
+RSALv2:
+  Name: RSALv2
+  Status: Requires Legal Approval
+  Notes: The Redis Source Available License v2 (RSALv2) is a non-OSI-approved license that allows use of the software but restricts use in Database Products offered as a service. It permits most uses except for commercial Database Products that compete directly with Redis products. Requires legal review for commercial deployments.
+
 MIT:
   Name: MIT
   Status: Allowed
@@ -17,6 +32,11 @@ BSD-2-Clause:
   Name: BSD-2-Clause
   Status: Allowed
   Notes: The 2-Clause BSD License is similar to the 3-Clause BSD License but without the non-endorsement clause.
+  
+Redis-BSD:
+  Name: Redis-BSD
+  Status: Allowed
+  Notes: Redis OSS is licensed under the 3-Clause BSD License, a permissive license that allows for nearly unlimited freedom with the software as long as BSD copyright and license notice is included.
 
 GPL-3.0:
   Name: GPL-3.0
@@ -27,6 +47,16 @@ GPL-2.0:
   Name: GPL-2.0
   Status: See Notes
   Notes: GPL-2.0 is a copyleft license that may require derivative works to be distributed under the same license. It lacks the patent provisions of GPL-3.0.
+
+GPL-2.0-with-classpath-exception:
+  Name: GPL-2.0-with-classpath-exception
+  Status: See Notes
+  Notes: The GPL-2.0 with Classpath Exception is a more permissive variant of GPL-2.0. The Classpath Exception allows linking the licensed code with classes under independent modules that are not derived works, making it more suitable for library use.
+
+GFTC:
+  Name: GFTC
+  Status: Requires Legal Approval
+  Notes: The GraalVM Free Terms and Conditions (GFTC) is Oracle's proprietary license for the Oracle GraalVM distribution. It allows for free development and production use but includes restrictions on commercial deployments. Legal review is required for commercial use.
 
 AGPL-3.0:
   Name: AGPL-3.0
@@ -82,3 +112,8 @@ Artistic-2.0:
   Name: Artistic-2.0
   Status: Allowed
   Notes: The Artistic License 2.0 is a permissive license commonly used in the Perl community. 
+
+OpenSSL-License:
+  Name: OpenSSL License
+  Status: Allowed
+  Notes: The OpenSSL License is a permissive license that allows for commercial use provided that the OpenSSL License is included.
