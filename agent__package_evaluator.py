@@ -409,6 +409,16 @@ async def evaluate_package_team(text_information: str) -> PackageEvaluationResul
         package_name = package_info.get("Name", "")
         print(f"Package name: {package_name}, Version: {requested_version}")
 
+        if package_info.get("Name","") == "Unknown":
+            return {
+                "guidance": "Seek Clarification",
+                "explanation": "Package name is unknown",
+                "package_info": {},
+                "license_info": {},
+                "vulnerability_info": {},
+                "health_info": {},
+                "evaluation_timestamp": datetime.now().strftime("%B %d, %Y")
+            }
         # Check cache directory for matching results using the standardized package info
         cache_dir = "cache"
         if os.path.exists(cache_dir):
@@ -433,11 +443,16 @@ async def evaluate_package_team(text_information: str) -> PackageEvaluationResul
         else:
             license_info = await license_researcher(text_information + "\n" + json.dumps(package_info))
         
+        
+            
+
         # Get vulnerability information
-        vulnerability_info = await vulnerability_researcher(text_information)
+        # Create a special text information for the vulnerability researcher
+        text_information_for_vulnerability_researcher = package_info.get("Name", "") + " " + package_info.get("Requested_Package_Version", "")
+        vulnerability_info = await vulnerability_researcher(text_information_for_vulnerability_researcher)
         
         # Get health information
-        health_info = await software_health_assessor(text_information)
+        health_info = await software_health_assessor(json.dumps(package_info))
         
         # Prepare dependencies for final evaluation
         current_date = datetime.now().strftime("%B %d, %Y")
@@ -504,7 +519,7 @@ def print_results(result: PackageEvaluationResult):
         
         # Print basic information
         print(f"📦 Package: {package_info.get('Name', 'Unknown')}")
-        print(f"📊 Version: {package_info.get('Latest_Package_Version', 'Unknown')}")
+        print(f"📊 Version: {package_info.get('Requested_Package_Version', 'Unknown')} ({package_info.get('Latest_Package_Version', 'Unknown')} Latest)")        
         print(f"🎯 Guidance: {result.get('guidance', 'Unknown')}")
         print(f"📝 Explanation: {result.get('explanation', 'No explanation provided')}")
         print(f"📜 License: {license_info.get('Name', 'Unknown')} ({license_info.get('Status', 'Unknown')})")
