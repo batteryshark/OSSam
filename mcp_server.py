@@ -8,7 +8,7 @@ load_dotenv()
 
 # Installation required: pip install "pydantic-ai-slim[mcp]"
 # MCP integration requires Python 3.10 or higher.
-MCP_SERVER_NAME = os.getenv("MCP_SERVER_NAME", "3ppete")
+MCP_SERVER_NAME = os.getenv("MCP_SERVER_NAME", "thirdparty-package-evaluator")
 MCP_HOST = os.getenv("MCP_HOST", "0.0.0.0")
 MCP_PORT = os.getenv("MCP_PORT", 3899)
 
